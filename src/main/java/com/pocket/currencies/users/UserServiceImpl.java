@@ -57,6 +57,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 .email(userDto.getEmail())
                 .userRole(UserRole.USER)
                 .pocket(newPocket)
+                .locked(false)
                 .build();
         pocketRepository.save(newPocket);
         userRepository.save(user);
