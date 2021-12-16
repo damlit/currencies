@@ -10,15 +10,16 @@ import com.pocket.currencies.users.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
 public class RegistrationServiceImpl implements RegistrationService {
 
+    private final static String TOKEN_CONFIRMED_MSG = "Token has been confirmed!";
+
     private final UserServiceImpl userService;
-    private final ConfirmationTokenService confirmationTokenService;
+    private final ConfirmationTokenServiceImpl confirmationTokenService;
     private final EmailValidator emailValidator;
 
     public String register(UserDto userDto) {
@@ -29,7 +30,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         return userService.signUpUser(userDto);
     }
 
-    @Transactional
     public String confirmToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenService
                 .getToken(token)
@@ -47,6 +47,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         confirmationTokenService.setConfirmedAt(token);
         userService.enableUser(confirmationToken.getUser().getEmail());
-        return "Token has been confirmed!";
+        return TOKEN_CONFIRMED_MSG;
     }
 }

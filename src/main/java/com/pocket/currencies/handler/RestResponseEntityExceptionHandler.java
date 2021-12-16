@@ -1,5 +1,8 @@
 package com.pocket.currencies.handler;
 
+import com.pocket.currencies.currencies.exception.GetCurrenciesException;
+import com.pocket.currencies.currencies.exception.UpdateCurrenciesFailedException;
+import com.pocket.currencies.pocket.exception.IncorrectInputDataException;
 import com.pocket.currencies.registration.exception.EmailAlreadyConfirmedException;
 import com.pocket.currencies.registration.exception.EmailIsNotValidException;
 import com.pocket.currencies.registration.exception.TokenExpiredException;
@@ -44,5 +47,23 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     protected ResponseEntity<Object> handleEmailAlreadyExists(RuntimeException ex, WebRequest request) {
         String bodyOfResponse = "Account with this email already exists!";
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
+
+    @ExceptionHandler(value = IncorrectInputDataException.class)
+    protected ResponseEntity<Object> handleIncorerectInputData(RuntimeException ex, WebRequest request) {
+        String bodyOfResponse = "Input data has been incorrect!";
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = GetCurrenciesException.class)
+    protected ResponseEntity<Object> handleGetCurrencies(RuntimeException ex, WebRequest request) {
+        String bodyOfResponse = "Unexpected error during getting currencies!";
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(value = UpdateCurrenciesFailedException.class)
+    protected ResponseEntity<Object> handleUpdatedCurrenciesFailed(RuntimeException ex, WebRequest request) {
+        String bodyOfResponse = "Unexpected error during updating currencies!";
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 }

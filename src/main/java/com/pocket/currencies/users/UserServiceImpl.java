@@ -7,9 +7,11 @@ import com.pocket.currencies.users.entity.UserDto;
 import com.pocket.currencies.users.entity.UserRole;
 import com.pocket.currencies.users.exception.EmailAlreadyExistsException;
 import com.pocket.currencies.users.repository.UserRepository;
-import com.pocket.currencies.registration.ConfirmationTokenService;
+import com.pocket.currencies.registration.ConfirmationTokenServiceImpl;
 import com.pocket.currencies.registration.entity.ConfirmationToken;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,7 +30,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserRepository userRepository;
     private final PocketRepository pocketRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final ConfirmationTokenService confirmationTokenService;
+    private final ConfirmationTokenServiceImpl confirmationTokenService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -40,6 +42,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userRepository.findFirstByEmail(userDto.getEmail())
                 .map(this::createTokenForExistingUser)
                 .orElse(createNewToken(createNewUserAccount(userDto)));
+    }
+
+    public int enableUser(String email) {
+        return userRepository.enableAppUser(email);
+    }
+
+    public User getActiveUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userRepository.findByEmail(authentication.getName());
     }
 
     private String createTokenForExistingUser(User userFromDb) {
@@ -59,6 +70,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 .pocket(newPocket)
                 .locked(false)
                 .build();
+        newPocket.setUserId(user);
         pocketRepository.save(newPocket);
         userRepository.save(user);
         return user;
@@ -74,9 +86,5 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         );
         confirmationTokenService.saveConfirmationToken(confirmationToken);
         return token;
-    }
-
-    public int enableUser(String email) {
-        return userRepository.enableAppUser(email);
     }
 }

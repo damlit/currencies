@@ -6,6 +6,7 @@ import com.pocket.currencies.client.entity.QuotesResponse;
 import com.pocket.currencies.currencies.entity.Currency;
 import com.pocket.currencies.currencies.entity.ExchangeQuote;
 import com.pocket.currencies.currencies.entity.Quote;
+import com.pocket.currencies.currencies.exception.UpdateCurrenciesFailedException;
 import com.pocket.currencies.currencies.repository.ExchangeQuoteRepository;
 import com.pocket.currencies.currencies.repository.QuoteRepository;
 import com.squareup.okhttp.OkHttpClient;
@@ -47,6 +48,8 @@ public class QuotesClient {
             quoteRepository.saveAll(quotes);
             exchangeQuote.setQuotes(quotes);
             exchangeQuoteRepository.save(exchangeQuote);
+        } else {
+            throw new UpdateCurrenciesFailedException();
         }
     }
 
