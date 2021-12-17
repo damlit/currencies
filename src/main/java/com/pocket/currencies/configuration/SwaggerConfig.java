@@ -1,4 +1,4 @@
-package com.pocket.currencies.swagger;
+package com.pocket.currencies.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

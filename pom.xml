@@ -28,6 +28,7 @@
 		<jackson-databind.version>2.13.0</jackson-databind.version>
 		<springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
 		<logstash-logback-encoder.version>6.6</logstash-logback-encoder.version>
+		<jasypt.version>2.0.0</jasypt.version>
 	</properties>
 
 	<dependencies>
@@ -87,6 +88,11 @@
 			<groupId>net.logstash.logback</groupId>
 			<artifactId>logstash-logback-encoder</artifactId>
 			<version>${logstash-logback-encoder.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.ulisesbocchio</groupId>
+			<artifactId>jasypt-spring-boot-starter</artifactId>
+			<version>${jasypt.version}</version>
 		</dependency>
 	</dependencies>
 
