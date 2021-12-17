@@ -3,6 +3,7 @@ package com.pocket.currencies.currencies;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pocket.currencies.client.QuotesClient;
+import com.pocket.currencies.client.QuotesService;
 import com.pocket.currencies.currencies.entity.ExchangeQuote;
 import com.pocket.currencies.currencies.exception.GetCurrenciesException;
 import com.pocket.currencies.currencies.exception.UpdateCurrenciesFailedException;
@@ -22,12 +23,12 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     private final Logger LOG = LoggerFactory.getLogger("logger");
 
-    private final QuotesClient client;
+    private final QuotesService quotesService;
     private final ExchangeQuoteRepository exchangeQuoteRepository;
 
     public boolean updateCurrencies() {
         try {
-            client.updateQuotes();
+            quotesService.updateQuotes();
             return true;
         } catch (IOException e) {
             throw new UpdateCurrenciesFailedException();

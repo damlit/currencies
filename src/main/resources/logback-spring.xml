@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+
+<configuration>
+
+  <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <fieldNames>
+        <version>[ignore]</version>
+        <levelValue>[ignore]</levelValue>
+        <thread>[ignore]</thread>
+      </fieldNames>
+    </encoder>
+  </appender>
+
+  <logger name="org.hibernate" level="warn" />
+  <logger name="org.springframework" level="warn" />
+
+  <root level="info">
+    <appender-ref ref="stdout" />
+  </root>
+
+  <jmxConfigurator />
+
+  <jmxConfigurator />
+
+</configuration>

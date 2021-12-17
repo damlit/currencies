@@ -9,5 +9,4 @@ class CurrenciesApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
