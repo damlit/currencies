@@ -8,6 +8,8 @@ import com.pocket.currencies.registration.exception.TokenIsNotValidException;
 import com.pocket.currencies.users.entity.UserDto;
 import com.pocket.currencies.users.UserServiceImpl;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RegistrationServiceImpl implements RegistrationService {
 
+    private final Logger LOG = LoggerFactory.getLogger("logger");
+
     private final static String TOKEN_CONFIRMED_MSG = "Token has been confirmed!";
 
     private final UserServiceImpl userService;
@@ -23,10 +27,13 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final EmailValidator emailValidator;
 
     public String register(UserDto userDto) {
+        LOG.info("Registration user (" + userDto.getEmail() + ") is starting");
         boolean isValidEmail = emailValidator.test(userDto.getEmail());
         if (!isValidEmail) {
+            LOG.info("Email " + userDto.getEmail() + " is not valid" );
             throw new EmailIsNotValidException();
         }
+        LOG.info("Email " + userDto.getEmail() + " is valid" );
         return userService.signUpUser(userDto);
     }
 
@@ -36,17 +43,20 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .orElseThrow(TokenIsNotValidException::new);
 
         if (confirmationToken.getConfirmedAt() != null) {
+            LOG.info("Email was confirmed already");
             throw new EmailAlreadyConfirmedException();
         }
 
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
+            LOG.info("Token is expired");
             throw new TokenExpiredException();
         }
 
         confirmationTokenService.setConfirmedAt(token);
         userService.enableUser(confirmationToken.getUser().getEmail());
+        LOG.info("Token (" + token + ") has been confirmed");
         return TOKEN_CONFIRMED_MSG;
     }
 }

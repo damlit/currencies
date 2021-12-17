@@ -10,6 +10,8 @@ import com.pocket.currencies.users.repository.UserRepository;
 import com.pocket.currencies.registration.ConfirmationTokenServiceImpl;
 import com.pocket.currencies.registration.entity.ConfirmationToken;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

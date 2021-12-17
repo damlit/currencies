@@ -7,6 +7,9 @@ import com.pocket.currencies.currencies.repository.ExchangeQuoteRepository;
 import com.pocket.currencies.pocket.entity.Deposit;
 import com.pocket.currencies.pocket.entity.Pocket;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -17,11 +20,15 @@ import java.util.Optional;
 @Component
 public class ProfitCalculator {
 
+    private final Logger LOG = LoggerFactory.getLogger("logger");
+
     ExchangeQuoteRepository exchangeQuoteRepository;
 
     public BigDecimal calculateProfit(Pocket pocket) {
         ExchangeQuote newestExchangeQuote = exchangeQuoteRepository.findFirstByOrderByQuotesDateDesc();
+
         BigDecimal plnQuote = getQuoteValueForCurrency(newestExchangeQuote, Currency.PLN);
+        LOG.info("PLN quote for source quote (USD) = " + plnQuote);
         return pocket.getDeposits().stream()
                 .map(deposit -> calculateProfitFromOneDeposit(newestExchangeQuote, deposit, plnQuote))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -48,6 +55,7 @@ public class ProfitCalculator {
     }
 
     private BigDecimal calculateDifference(Deposit deposit, BigDecimal newestQuote, BigDecimal plnQuote) {
+        LOG.info("Calculating difference for " + deposit.getBoughtCurrency().getCurrency() + " (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
         BigDecimal quoteForPlnCurrency = plnQuote.divide(newestQuote, RoundingMode.HALF_DOWN);
         BigDecimal newestValue = quoteForPlnCurrency.multiply(deposit.getBoughtSum());
         return newestValue.subtract(deposit.getSoldSum()).setScale(2, RoundingMode.HALF_DOWN);

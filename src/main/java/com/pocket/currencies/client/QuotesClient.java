@@ -13,6 +13,8 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +29,8 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class QuotesClient {
+
+    private final Logger LOG = LoggerFactory.getLogger("logger");
 
     private final ExchangeQuoteRepository exchangeQuoteRepository;
     private final QuoteRepository quoteRepository;
@@ -44,19 +48,23 @@ public class QuotesClient {
 
         ExchangeQuote exchangeQuote = createExchangeQuoteFromResponse(quotesResponse);
         if (isNotQuotesFromLastUpdate(exchangeQuote)) {
+            LOG.info("Saving new quotes");
             List<Quote> quotes = createQuotesFromResponse(quotesResponse, exchangeQuote);
             quoteRepository.saveAll(quotes);
             exchangeQuote.setQuotes(quotes);
             exchangeQuoteRepository.save(exchangeQuote);
         } else {
+            LOG.info("Quotes are updated already");
             throw new UpdateCurrenciesFailedException();
         }
     }
 
     private String getQuotesFromService() throws IOException {
         OkHttpClient client = new OkHttpClient();
+        String endpoint = getEndpoint();
+        LOG.info("Update quotes is starting for endpoint " + endpoint);
         Request request = new Request.Builder()
-                .url(getEndpoint())
+                .url(endpoint)
                 .method("GET", null)
                 .build();
         Response response = client.newCall(request).execute();
@@ -86,6 +94,7 @@ public class QuotesClient {
     }
 
     private boolean isNotQuotesFromLastUpdate(ExchangeQuote exchangeQuote) {
+        LOG.info("Checking if this quotes (time: " + exchangeQuote.getQuotesDate() + ") exists in database");
         ExchangeQuote lastExchangeQuote = exchangeQuoteRepository.findFirstByOrderByQuotesDateDesc();
         return lastExchangeQuote == null
                 || lastExchangeQuote.getQuotesDate().getTime() != exchangeQuote.getQuotesDate().getTime();

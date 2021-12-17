@@ -27,6 +27,7 @@
 		<java-jwt.version>3.10.3</java-jwt.version>
 		<jackson-databind.version>2.13.0</jackson-databind.version>
 		<springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+		<logstash-logback-encoder.version>6.6</logstash-logback-encoder.version>
 	</properties>
 
 	<dependencies>
@@ -81,6 +82,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>${logstash-logback-encoder.version}</version>
 		</dependency>
 	</dependencies>
 

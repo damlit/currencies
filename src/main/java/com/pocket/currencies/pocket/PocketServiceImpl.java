@@ -10,6 +10,9 @@ import com.pocket.currencies.pocket.repository.PocketRepository;
 import com.pocket.currencies.users.UserService;
 import com.pocket.currencies.users.entity.User;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,8 @@ import java.math.RoundingMode;
 @Service
 @AllArgsConstructor
 public class PocketServiceImpl implements PocketService {
+
+    private final Logger LOG = LoggerFactory.getLogger("logger");
 
     private final static String SUCCESS_DEPOSIT_MSG = "Success deposit with id %s";
     private final static String REMOVE_DEPOSIT_MSG = "Deposit with id %s has been removed.";
@@ -34,6 +39,7 @@ public class PocketServiceImpl implements PocketService {
     public String addDeposit(DepositDto depositDto) {
         try {
             Deposit deposit = createDepositFromDto(depositDto);
+            LOG.info("Adding deposit (id=" + deposit.getId() + ") to pocket (id=" + deposit.getPocket().getId() + ")");
             depositRepository.save(deposit);
             return String.format(SUCCESS_DEPOSIT_MSG, deposit.getId());
         } catch (IllegalArgumentException exception) {
@@ -45,6 +51,7 @@ public class PocketServiceImpl implements PocketService {
     public String removeDeposit(long id) {
         try {
             depositRepository.deleteById(id);
+            LOG.info("Removing deposit (id=" + id + ")");
             return String.format(REMOVE_DEPOSIT_MSG, id);
         } catch (IllegalArgumentException exception) {
             throw new IncorrectInputDataException();
@@ -53,7 +60,10 @@ public class PocketServiceImpl implements PocketService {
 
     @Override
     public String calculateProfit() {
-        return String.format(PROFIT_MSG, profitCalculator.calculateProfit(getActiveUserPocket()).toPlainString());
+        LOG.info("Start calculating profit (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
+        BigDecimal profit = profitCalculator.calculateProfit(getActiveUserPocket());
+        LOG.info("Profit = " + profit.toPlainString() + " (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
+        return String.format(PROFIT_MSG, profit.toPlainString());
     }
 
     private Deposit createDepositFromDto(DepositDto depositDto) {
