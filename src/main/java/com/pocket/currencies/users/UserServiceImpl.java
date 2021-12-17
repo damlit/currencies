@@ -2,16 +2,14 @@ package com.pocket.currencies.users;
 
 import com.pocket.currencies.pocket.entity.Pocket;
 import com.pocket.currencies.pocket.repository.PocketRepository;
+import com.pocket.currencies.registration.ConfirmationTokenService;
 import com.pocket.currencies.users.entity.User;
 import com.pocket.currencies.users.entity.UserDto;
 import com.pocket.currencies.users.entity.UserRole;
 import com.pocket.currencies.users.exception.EmailAlreadyExistsException;
 import com.pocket.currencies.users.repository.UserRepository;
-import com.pocket.currencies.registration.ConfirmationTokenServiceImpl;
 import com.pocket.currencies.registration.entity.ConfirmationToken;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +30,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserRepository userRepository;
     private final PocketRepository pocketRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final ConfirmationTokenServiceImpl confirmationTokenService;
+    private final ConfirmationTokenService confirmationTokenService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -43,7 +41,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public String signUpUser(UserDto userDto) {
         return userRepository.findFirstByEmail(userDto.getEmail())
                 .map(this::createTokenForExistingUser)
-                .orElse(createNewToken(createNewUserAccount(userDto)));
+                .orElseGet(() -> createNewToken(createNewUserAccount(userDto)));
     }
 
     public int enableUser(String email) {

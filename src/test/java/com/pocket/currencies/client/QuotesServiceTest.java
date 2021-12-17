@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,7 +25,6 @@ import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.any;
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest
 public class QuotesServiceTest {
 
     private QuotesService quotesService;
