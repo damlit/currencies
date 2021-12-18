@@ -15,6 +15,7 @@ import com.pocket.currencies.users.entity.User;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,10 +67,10 @@ public class PocketServiceImpl implements PocketService {
     }
 
     @Override
-    public String getAllDepositsForCurrentUser() {
+    public String getAllDepositsForCurrentUser(int page, int size) {
         LOG.info("Getting deposits (user=" + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
         ObjectMapper objectMapper = new ObjectMapper();
-        List<Deposit> deposits = depositRepository.getAllByPocket(getActiveUserPocket());
+        List<Deposit> deposits = depositRepository.getAllByPocket(getActiveUserPocket(), PageRequest.of(page, size));
         try {
             return objectMapper.writeValueAsString(deposits);
         } catch (JsonProcessingException e) {

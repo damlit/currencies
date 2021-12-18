@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import java.math.BigDecimal;
@@ -102,22 +103,24 @@ public class PocketServiceTest {
     public void shouldReturnDeposits() {
         String expectedMessage = "["
                 + "{\"id\":1,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\",\"quote\":10.0,\"soldSum\":1,\"boughtSum\":10},"
-                + "{\"id\":2,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\",\"quote\":10.0,\"soldSum\":1,\"boughtSum\":10}"
+                + "{\"id\":2,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\",\"quote\":10.0,\"soldSum\":1,\"boughtSum\":10},"
+                + "{\"id\":3,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\",\"quote\":10.0,\"soldSum\":1,\"boughtSum\":10}"
                 + "]";
         User user = getMockedUser();
         Pocket pocket = new Pocket(1, user, new ArrayList<>());
         Deposit deposit1 = new Deposit(1, Currency.PLN, Currency.EUR, BigDecimal.valueOf(10.0), BigDecimal.ONE, BigDecimal.TEN, pocket);
         Deposit deposit2 = new Deposit(2, Currency.PLN, Currency.EUR, BigDecimal.valueOf(10.0), BigDecimal.ONE, BigDecimal.TEN, pocket);
-        List<Deposit> deposits = Arrays.asList(deposit1, deposit2);
+        Deposit deposit3 = new Deposit(3, Currency.PLN, Currency.EUR, BigDecimal.valueOf(10.0), BigDecimal.ONE, BigDecimal.TEN, pocket);
+        List<Deposit> deposits = Arrays.asList(deposit1, deposit2, deposit3);
         pocket.setDeposits(deposits);
         user.setPocket(pocket);
         when(userService.getActiveUser()).thenReturn(user);
         when(pocketRepository.getById(1L)).thenReturn(pocket);
-        when(depositRepository.getAllByPocket(pocket)).thenReturn(deposits);
+        when(depositRepository.getAllByPocket(pocket, PageRequest.of(0, 3))).thenReturn(deposits);
 
-        String message = pocketService.getAllDepositsForCurrentUser();
+        String message = pocketService.getAllDepositsForCurrentUser(0, 3);
 
-        verify(depositRepository, times(1)).getAllByPocket(pocket);
+        verify(depositRepository, times(1)).getAllByPocket(pocket, PageRequest.of(0, 3));
         assertEquals(expectedMessage, message);
     }
 
