@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Clock;
@@ -51,12 +52,12 @@ public class ConfirmationTokenServiceTest {
     public void shouldConfirmedConfirmationToken() {
         Clock clock = Clock.fixed(Instant.parse("2021-12-22T10:15:30.00Z"), ZoneId.of("UTC"));
         LocalDateTime dateTime = LocalDateTime.now(clock);
-        mockStatic(LocalDateTime.class);
+        MockedStatic<LocalDateTime> mockedStatic = mockStatic(LocalDateTime.class);
         when(LocalDateTime.now()).thenReturn(dateTime);
 
         confirmationTokenService.setConfirmedAt("test1");
 
         verify(confirmationTokenRepository, times(1)).updateConfirmedAt("test1", LocalDateTime.now());
-
+        mockedStatic.close();
     }
 }
