@@ -2,6 +2,7 @@ package com.pocket.currencies.handler;
 
 import com.pocket.currencies.currencies.exception.GetCurrenciesException;
 import com.pocket.currencies.currencies.exception.UpdateCurrenciesFailedException;
+import com.pocket.currencies.pocket.exception.GetDepositsException;
 import com.pocket.currencies.pocket.exception.IncorrectInputDataException;
 import com.pocket.currencies.registration.exception.EmailAlreadyConfirmedException;
 import com.pocket.currencies.registration.exception.EmailIsNotValidException;
@@ -64,6 +65,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ExceptionHandler(value = UpdateCurrenciesFailedException.class)
     protected ResponseEntity<Object> handleUpdatedCurrenciesFailed(RuntimeException ex, WebRequest request) {
         String bodyOfResponse = "Unexpected error during updating currencies!";
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(value = GetDepositsException.class)
+    protected ResponseEntity<Object> handleGetDeposits(RuntimeException ex, WebRequest request) {
+        String bodyOfResponse = "Unexpected error during getting deposits!";
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 }

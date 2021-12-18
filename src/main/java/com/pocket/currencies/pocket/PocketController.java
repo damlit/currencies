@@ -35,4 +35,10 @@ public class PocketController {
     public String calculateProfit() {
         return pocketService.calculateProfit();
     }
+
+    @GetMapping(value = "/deposit/all")
+    @ResponseStatus(HttpStatus.OK)
+    public String getDeposits() {
+        return pocketService.getAllDepositsForCurrentUser();
+    }
 }

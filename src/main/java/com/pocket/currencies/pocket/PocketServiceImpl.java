@@ -1,9 +1,12 @@
 package com.pocket.currencies.pocket;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pocket.currencies.pocket.calculator.ProfitCalculator;
 import com.pocket.currencies.pocket.entity.Deposit;
 import com.pocket.currencies.pocket.entity.DepositDto;
 import com.pocket.currencies.pocket.entity.Pocket;
+import com.pocket.currencies.pocket.exception.GetDepositsException;
 import com.pocket.currencies.pocket.exception.IncorrectInputDataException;
 import com.pocket.currencies.pocket.repository.DepositRepository;
 import com.pocket.currencies.pocket.repository.PocketRepository;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -27,7 +31,6 @@ public class PocketServiceImpl implements PocketService {
 
     private final static String SUCCESS_DEPOSIT_MSG = "Success deposit with id %s";
     private final static String REMOVE_DEPOSIT_MSG = "Deposit with id %s has been removed";
-    private final static String PROFIT_MSG = "Your profit equals: %s";
 
     private final PocketRepository pocketRepository;
     private final DepositRepository depositRepository;
@@ -59,7 +62,19 @@ public class PocketServiceImpl implements PocketService {
         LOG.info("Start calculating profit (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
         BigDecimal profit = profitCalculator.calculateProfit(getActiveUserPocket());
         LOG.info("Profit = " + profit.toPlainString() + " (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
-        return String.format(PROFIT_MSG, profit.toPlainString());
+        return profit.toPlainString();
+    }
+
+    @Override
+    public String getAllDepositsForCurrentUser() {
+        LOG.info("Getting deposits (user=" + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Deposit> deposits = depositRepository.getAllByPocket(getActiveUserPocket());
+        try {
+            return objectMapper.writeValueAsString(deposits);
+        } catch (JsonProcessingException e) {
+            throw new GetDepositsException();
+        }
     }
 
     private Deposit createDepositFromDto(DepositDto depositDto) {

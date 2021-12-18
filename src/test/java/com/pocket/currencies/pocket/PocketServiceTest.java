@@ -2,6 +2,7 @@ package com.pocket.currencies.pocket;
 
 import com.pocket.currencies.currencies.entity.Currency;
 import com.pocket.currencies.pocket.calculator.ProfitCalculator;
+import com.pocket.currencies.pocket.entity.Deposit;
 import com.pocket.currencies.pocket.entity.DepositDto;
 import com.pocket.currencies.pocket.entity.Pocket;
 import com.pocket.currencies.pocket.repository.DepositRepository;
@@ -19,6 +20,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -80,7 +83,7 @@ public class PocketServiceTest {
     @Test
     @WithMockUser
     public void shouldReturnProfit() {
-        String expectedMessage = "Your profit equals: 1000.21";
+        String expectedMessage = "1000.21";
         User user = getMockedUser();
         Pocket pocket = new Pocket(1, user, new ArrayList<>());
         user.setPocket(pocket);
@@ -90,6 +93,31 @@ public class PocketServiceTest {
 
         String message = pocketService.calculateProfit();
 
+        verify(profitCalculator, times(1)).calculateProfit(pocket);
+        assertEquals(expectedMessage, message);
+    }
+
+    @Test
+    @WithMockUser
+    public void shouldReturnDeposits() {
+        String expectedMessage = "["
+                + "{\"id\":1,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\",\"quote\":10.0,\"soldSum\":1,\"boughtSum\":10},"
+                + "{\"id\":2,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\",\"quote\":10.0,\"soldSum\":1,\"boughtSum\":10}"
+                + "]";
+        User user = getMockedUser();
+        Pocket pocket = new Pocket(1, user, new ArrayList<>());
+        Deposit deposit1 = new Deposit(1, Currency.PLN, Currency.EUR, BigDecimal.valueOf(10.0), BigDecimal.ONE, BigDecimal.TEN, pocket);
+        Deposit deposit2 = new Deposit(2, Currency.PLN, Currency.EUR, BigDecimal.valueOf(10.0), BigDecimal.ONE, BigDecimal.TEN, pocket);
+        List<Deposit> deposits = Arrays.asList(deposit1, deposit2);
+        pocket.setDeposits(deposits);
+        user.setPocket(pocket);
+        when(userService.getActiveUser()).thenReturn(user);
+        when(pocketRepository.getById(1L)).thenReturn(pocket);
+        when(depositRepository.getAllByPocket(pocket)).thenReturn(deposits);
+
+        String message = pocketService.getAllDepositsForCurrentUser();
+
+        verify(depositRepository, times(1)).getAllByPocket(pocket);
         assertEquals(expectedMessage, message);
     }
 
