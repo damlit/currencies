@@ -1,6 +1,7 @@
 package com.pocket.currencies.currencies;
 
 import com.pocket.currencies.client.QuotesService;
+import com.pocket.currencies.currencies.entity.ExchangeQuote;
 import com.pocket.currencies.currencies.repository.ExchangeQuoteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import static org.mockito.Mockito.*;
+import java.util.Collections;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
@@ -30,18 +37,25 @@ public class CurrencyServiceTest {
     @Test
     @WithMockUser
     public void shouldGetLastQuotes() {
+        when(exchangeQuoteRepository.findFirstByOrderByQuotesDateDesc()).thenReturn(new ExchangeQuote(1, new Date(1L), "USD", null));
+        String expectedMessage = "{\"id\":1,\"quotesDate\":1,\"source\":\"USD\",\"quotes\":null}";
 
-        currencyService.getLastQuotes();
+        String message = currencyService.getLastQuotes();
 
         verify(exchangeQuoteRepository, times(1)).findFirstByOrderByQuotesDateDesc();
+        assertEquals(expectedMessage, message);
     }
 
     @Test
     @WithMockUser
     public void shouldGetLast10Quotes() {
+        ExchangeQuote exchangeQuote = new ExchangeQuote(1, new Date(1L), "USD", null);
+        String expectedMessage = "[{\"id\":1,\"quotesDate\":1,\"source\":\"USD\",\"quotes\":null}]";
+        when(exchangeQuoteRepository.findTop10ByOrderByQuotesDateDesc()).thenReturn(Collections.singletonList(exchangeQuote));
 
-        currencyService.getQuotes();
+        String message = currencyService.getQuotes();
 
         verify(exchangeQuoteRepository, times(1)).findTop10ByOrderByQuotesDateDesc();
+        assertEquals(expectedMessage, message);
     }
 }

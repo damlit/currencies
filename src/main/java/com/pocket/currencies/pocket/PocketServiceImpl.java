@@ -26,7 +26,7 @@ public class PocketServiceImpl implements PocketService {
     private final Logger LOG = LoggerFactory.getLogger("logger");
 
     private final static String SUCCESS_DEPOSIT_MSG = "Success deposit with id %s";
-    private final static String REMOVE_DEPOSIT_MSG = "Deposit with id %s has been removed.";
+    private final static String REMOVE_DEPOSIT_MSG = "Deposit with id %s has been removed";
     private final static String PROFIT_MSG = "Your profit equals: %s";
 
     private final PocketRepository pocketRepository;
@@ -49,13 +49,9 @@ public class PocketServiceImpl implements PocketService {
 
     @Override
     public String removeDeposit(long id) {
-        try {
-            depositRepository.deleteById(id);
-            LOG.info("Removing deposit (id=" + id + ")");
-            return String.format(REMOVE_DEPOSIT_MSG, id);
-        } catch (IllegalArgumentException exception) {
-            throw new IncorrectInputDataException();
-        }
+        depositRepository.deleteById(id);
+        LOG.info("Removing deposit (id=" + id + ")");
+        return String.format(REMOVE_DEPOSIT_MSG, id);
     }
 
     @Override

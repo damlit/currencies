@@ -12,14 +12,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
+import java.util.UUID;
 
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.any;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,10 +49,15 @@ public class UserServiceTest {
         UserDto userDto = new UserDto("example@test.pl", "123");
         User user = User.builder().email("example@test.pl").userRole(UserRole.USER).locked(false).enabled(false).build();
         when(userRepository.findFirstByEmail(userDto.getEmail())).thenReturn(Optional.of(user));
+        UUID uuid = UUID.randomUUID();
+        MockedStatic<UUID> mockedSettings = mockStatic(UUID.class);
+        when(UUID.randomUUID()).thenReturn(uuid);
 
-        userService.signUpUser(userDto);
+        String token = userService.signUpUser(userDto);
 
         verify(confirmationTokenService, times(1)).saveConfirmationToken(any());
+        assertEquals(uuid.toString(), token);
+        mockedSettings.close();
     }
 
     @Test
@@ -64,10 +73,15 @@ public class UserServiceTest {
     public void shouldReturnTokenForNewUserUser() {
         UserDto userDto = new UserDto("example@test.pl", "123");
         when(userRepository.findFirstByEmail(userDto.getEmail())).thenReturn(Optional.empty());
+        UUID uuid = UUID.randomUUID();
+        MockedStatic<UUID> mockedSettings = mockStatic(UUID.class);
+        when(UUID.randomUUID()).thenReturn(uuid);
 
-        userService.signUpUser(userDto);
+        String token = userService.signUpUser(userDto);
 
         verify(confirmationTokenService, times(1)).saveConfirmationToken(any());
+        assertEquals(uuid.toString(), token);
+        mockedSettings.close();
     }
 
     @Test

@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CurrenciesApplication {
 
 	// todo: 1.circuit breaker 2.scheduler 3.cache
+	// encrypt key -Djasypt.encryptor.password=SECRET_KEY
 	public static void main(String[] args) {
 		SpringApplication.run(CurrenciesApplication.class, args);
 	}
