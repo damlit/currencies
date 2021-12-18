@@ -6,6 +6,8 @@ import com.pocket.currencies.pocket.calculator.ProfitCalculator;
 import com.pocket.currencies.pocket.entity.Deposit;
 import com.pocket.currencies.pocket.entity.DepositDto;
 import com.pocket.currencies.pocket.entity.Pocket;
+import com.pocket.currencies.pocket.entity.ProfitDto;
+import com.pocket.currencies.pocket.exception.CalculateProfitException;
 import com.pocket.currencies.pocket.exception.GetDepositsException;
 import com.pocket.currencies.pocket.exception.IncorrectInputDataException;
 import com.pocket.currencies.pocket.repository.DepositRepository;
@@ -63,7 +65,12 @@ public class PocketServiceImpl implements PocketService {
         LOG.info("Start calculating profit (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
         BigDecimal profit = profitCalculator.calculateProfit(getActiveUserPocket());
         LOG.info("Profit = " + profit.toPlainString() + " (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
-        return profit.toPlainString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(new ProfitDto(profit));
+        } catch (JsonProcessingException jsonProcessingException) {
+            throw new CalculateProfitException();
+        }
     }
 
     @Override

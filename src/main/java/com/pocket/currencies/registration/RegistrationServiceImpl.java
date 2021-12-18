@@ -5,8 +5,8 @@ import com.pocket.currencies.registration.exception.EmailAlreadyConfirmedExcepti
 import com.pocket.currencies.registration.exception.EmailIsNotValidException;
 import com.pocket.currencies.registration.exception.TokenExpiredException;
 import com.pocket.currencies.registration.exception.TokenIsNotValidException;
+import com.pocket.currencies.users.UserService;
 import com.pocket.currencies.users.entity.UserDto;
-import com.pocket.currencies.users.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +22,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     private final static String TOKEN_CONFIRMED_MSG = "Token has been confirmed!";
 
-    private final UserServiceImpl userService;
-    private final ConfirmationTokenServiceImpl confirmationTokenService;
+    private final UserService userService;
+    private final ConfirmationTokenService confirmationTokenService;
     private final EmailValidator emailValidator;
 
     public String register(UserDto userDto) {

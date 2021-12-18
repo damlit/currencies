@@ -84,7 +84,7 @@ public class PocketServiceTest {
     @Test
     @WithMockUser
     public void shouldReturnProfit() {
-        String expectedMessage = "1000.21";
+        String expectedMessage = "{\"profit\":1000.21}";
         User user = getMockedUser();
         Pocket pocket = new Pocket(1, user, new ArrayList<>());
         user.setPocket(pocket);
