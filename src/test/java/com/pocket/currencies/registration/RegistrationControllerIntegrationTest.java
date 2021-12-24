@@ -1,6 +1,5 @@
 package com.pocket.currencies.registration;
 
-import com.pocket.currencies.pocket.entity.Pocket;
 import com.pocket.currencies.pocket.repository.DepositRepository;
 import com.pocket.currencies.pocket.repository.PocketRepository;
 import com.pocket.currencies.registration.entity.ConfirmationToken;
@@ -18,10 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,6 +56,7 @@ public class RegistrationControllerIntegrationTest {
         MockedStatic<UUID> mockedSettings = mockStatic(UUID.class);
         when(UUID.randomUUID()).thenReturn(uuid);
         String requestBody = "{\"email\":\"test@test.pl\", \"password\":\"abc\"}";
+
         this.mvc.perform(post(REGISTRATION_ENDPOINT)
                 .content(requestBody)
                 .header("Content-Type", "application/json")

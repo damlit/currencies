@@ -1,6 +1,5 @@
 package com.pocket.currencies.currencies;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pocket.currencies.client.QuotesClient;
 import com.pocket.currencies.currencies.entity.ExchangeQuote;
 import com.pocket.currencies.currencies.repository.ExchangeQuoteRepository;
@@ -38,8 +37,6 @@ public class CurrencyControllerIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
-    @Autowired
-    private ObjectMapper objectMapper;
     @Autowired
     private ExchangeQuoteRepository exchangeQuoteRepository;
     @Autowired
