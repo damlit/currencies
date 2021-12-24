@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Component
@@ -47,17 +49,27 @@ public class ProfitCalculator {
     }
 
     private BigDecimal calculateProfitFromOneDeposit(ExchangeQuote newestExchangeQuote, Deposit deposit, BigDecimal plnQuote) {
-        Optional<Quote> quoteForCurrency = getQuoteForCurrency(newestExchangeQuote, deposit.getBoughtCurrency());
+        Optional<Quote> quoteForCurrency = getQuoteForCurrency(newestExchangeQuote, getCurrencyOtherThanPln(deposit));
         return quoteForCurrency
                 .map(Quote::getQuote)
                 .map(newestQuote -> calculateDifference(deposit, newestQuote, plnQuote))
                 .orElse(BigDecimal.ZERO);
     }
 
+    private Currency getCurrencyOtherThanPln(Deposit deposit) {
+        if (deposit.getBoughtCurrency() == Currency.PLN) {
+            return deposit.getSoldCurrency();
+        }
+        return deposit.getBoughtCurrency();
+    }
+
     private BigDecimal calculateDifference(Deposit deposit, BigDecimal newestQuote, BigDecimal plnQuote) {
         LOG.info("Calculating difference for " + deposit.getBoughtCurrency().getCurrency() + " (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
         BigDecimal quoteForPlnCurrency = plnQuote.divide(newestQuote, RoundingMode.HALF_DOWN);
         BigDecimal newestValue = quoteForPlnCurrency.multiply(deposit.getBoughtSum());
-        return newestValue.subtract(deposit.getSoldSum()).setScale(2, RoundingMode.HALF_DOWN);
+        if(deposit.getSoldCurrency() == Currency.PLN) {
+            return newestValue.subtract(deposit.getSoldSum()).setScale(2, RoundingMode.HALF_DOWN);
+        }
+        return deposit.getSoldSum().subtract(newestValue).setScale(2, RoundingMode.HALF_DOWN);
     }
 }

@@ -25,6 +25,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -109,7 +110,7 @@ public class PocketControllerIntegrationTest {
     @Test
     @WithMockUser(username = "test@test.pl")
     public void testCalculateProfit() throws Exception {
-        String expectedResponse = "{\"profit\":715.00}";
+        String expectedResponse = "{\"profit\":-12.65}";
         Pocket pocket = new Pocket();
         pocketRepository.save(pocket);
         Deposit deposit = createMockDeposit(Currency.EUR, BigDecimal.TEN, pocket);
@@ -180,7 +181,7 @@ public class PocketControllerIntegrationTest {
                 .quote(quote)
                 .pocket(pocket)
                 .soldSum(BigDecimal.TEN)
-                .boughtSum(BigDecimal.TEN.multiply(quote))
+                .boughtSum(BigDecimal.TEN.divide(quote, RoundingMode.HALF_DOWN))
                 .build();
     }
 }
