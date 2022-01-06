@@ -15,7 +15,7 @@ export const postRequest = async (endpoint, headers, body) => {
     }
 }
 
-export const getRequest = async (endpoint, headers) => {
+export const getRequest = async (endpoint, headers, json) => {
     var loginOptions = {
         method: 'GET',
         headers: headers,
@@ -23,8 +23,8 @@ export const getRequest = async (endpoint, headers) => {
     };
     try {
         const response = await fetch(endpoint, loginOptions);
-        const jsonResponse = await response.json();
-        return jsonResponse;
+        const convertedResponse = json ? response.json() : response.text();
+        return convertedResponse;
     } catch (error) {
         return console.log('error', error);
     }

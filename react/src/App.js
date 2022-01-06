@@ -1,46 +1,38 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
 import './App.css';
-import { getAuthToken } from './request/login.request';
-import { getLastCurrencies } from './request/currencies.request';
+import Login from './login/Login';
 
-class App extends Component {
-  state = {
-    isLoading: true,
-    lastCurrencies: []
-  };
+const App = () => {
+  
+  const [ token, setToken ] = useState();
 
-  async componentDidMount() {
-    const token = await getAuthToken("damian@test.pl", "test123");
-    const currencies = await getLastCurrencies(token);
-    this.setState({lastCurrencies: currencies, isLoading: false});
-  };
-
-  render() {
-    const { lastCurrencies, isLoading } = this.state;
-
-    if (isLoading) {
-      return <p>Loading...</p>;
+    if (!token) {
+      return < Login setToken={setToken} />;
     }
 
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <div className="App-link">
-            <h2>test</h2>
-            <div key={lastCurrencies.id}>
-              {lastCurrencies.quotes.map(quote =>
-                <div key={quote.id}>
-                  {quote.currency} has quote {quote.quote}
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
-      </div>
-    );
-  }
+      <div className="wrapper">
+      <h1>Application</h1>
+      <a href="/test1">
+        <button>test1</button>
+      </a>
+      <a href="/test2">
+        <button>test2</button>
+      </a>
+      <BrowserRouter>
+        <Switch>
+          <Route path="/test1">
+            <div>test 1</div>
+          </Route>
+          <Route path="/test2">
+            <div>test 2</div>
+          </Route>
+        </Switch>
+      </BrowserRouter>
+    </div>
+  );
 }
 
 export default App;
