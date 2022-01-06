@@ -53,15 +53,15 @@ const Login = ({ setToken }) => {
         </div>
       </form>
       {signUp &&
-          <form onSubmit={handleConfirmationToken}  id="confirmationForm">
-            <label>
-              <p>Confirmation token</p>
-              <input type="text" onChange={e => setSignUpToken(e.target.value)} />
-            </label>
-            <div>
-              <button type="confirm">Confirm</button>
-            </div>
-          </form>
+        <form onSubmit={handleConfirmationToken} id="confirmationForm">
+          <label>
+            <p>Confirmation token</p>
+            <input type="text" onChange={e => setSignUpToken(e.target.value)} />
+          </label>
+          <div>
+            <button type="confirm">Confirm</button>
+          </div>
+        </form>
       }
     </div>
   )
