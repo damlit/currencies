@@ -11,24 +11,36 @@ const Login = ({ setToken }) => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const token = await getAuthToken(email, password);
-    setToken(token);
+    const { status, token } = await getAuthToken(email, password);
+
+    if (status === 200 || status === 201) {
+      setToken(token);
+    } else {
+      alert('Something went wrong. Server response with code ' + status + ' (' + token + ').');
+    }
   }
 
   const handleSubmitSignUp = async e => {
     e.preventDefault();
-    const confirmationToken = await getRegistrationToken(email, password);
-    alert('Your confirmation token: ' + confirmationToken);
-    document.getElementById("userForm").reset();
+    const { status, confirmationToken } = await getRegistrationToken(email, password);
+
+    if (status === 201) {
+      alert('Your confirmation token: ' + confirmationToken);
+    } else {
+      alert('Something went wrong. Server response with code ' + status + ' (' + confirmationToken + ').');
+    }
   }
 
   const handleConfirmationToken = async e => {
     e.preventDefault();
-    const response = await sendConfirmationToken(signUpToken);
-    alert(response);
-    document.getElementById("userForm").reset();
-    document.getElementById("confirmationForm").reset();
-    setSignUp(false);
+    const { status, textResponse } = await sendConfirmationToken(signUpToken);
+    
+    alert(textResponse);
+    if (status === 200) {
+      document.getElementById("userForm").reset();
+      document.getElementById("confirmationForm").reset();
+      setSignUp(false);
+    }
   }
 
   return (
