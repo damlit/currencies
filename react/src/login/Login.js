@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { getAuthToken, getRegistrationToken, sendConfirmationToken } from '../request/login.request';
-import './Login.css';
+import { LoginWrapper } from './Login.styled.js';
 
 const Login = ({ setToken }) => {
   const [email, setEmail] = useState();
@@ -32,7 +32,7 @@ const Login = ({ setToken }) => {
   }
 
   return (
-    <div className="login-wrapper">
+    <LoginWrapper>
       <button onClick={() => setSignUp(false)}>login</button>
       <button onClick={() => setSignUp(true)}>sign up</button>
       {signUp
@@ -63,7 +63,7 @@ const Login = ({ setToken }) => {
           </div>
         </form>
       }
-    </div>
+    </LoginWrapper>
   )
 }
 
