@@ -14,15 +14,14 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Component
 public class ProfitCalculator {
 
     private final Logger LOG = LoggerFactory.getLogger("logger");
+    private final int SCALE = 6;
 
     ExchangeQuoteRepository exchangeQuoteRepository;
 
@@ -65,7 +64,7 @@ public class ProfitCalculator {
 
     private BigDecimal calculateDifference(Deposit deposit, BigDecimal newestQuote, BigDecimal plnQuote) {
         LOG.info("Calculating difference for " + deposit.getBoughtCurrency().getCurrency() + " (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
-        BigDecimal quoteForPlnCurrency = plnQuote.divide(newestQuote, RoundingMode.HALF_DOWN);
+        BigDecimal quoteForPlnCurrency = plnQuote.divide(newestQuote, SCALE, RoundingMode.HALF_DOWN);
         BigDecimal newestValue = quoteForPlnCurrency.multiply(deposit.getBoughtSum());
         if(deposit.getSoldCurrency() == Currency.PLN) {
             return newestValue.subtract(deposit.getSoldSum()).setScale(2, RoundingMode.HALF_DOWN);

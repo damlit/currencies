@@ -1,6 +1,7 @@
 package com.pocket.currencies.currencies;
 
 import com.pocket.currencies.client.QuotesService;
+import com.pocket.currencies.currencies.entity.Currency;
 import com.pocket.currencies.currencies.entity.ExchangeQuote;
 import com.pocket.currencies.currencies.repository.ExchangeQuoteRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
@@ -37,10 +39,10 @@ public class CurrencyServiceTest {
     @Test
     @WithMockUser
     public void shouldGetLastQuotes() {
-        when(exchangeQuoteRepository.findFirstByOrderByQuotesDateDesc()).thenReturn(new ExchangeQuote(1, new Date(1L), "USD", null));
-        String expectedMessage = "{\"id\":1,\"quotesDate\":1,\"source\":\"USD\",\"quotes\":null}";
+        when(exchangeQuoteRepository.findFirstByOrderByQuotesDateDesc()).thenReturn(new ExchangeQuote(1, new Date(1L), "USD", new ArrayList<>()));
+        String expectedMessage = "{\"id\":1,\"quotesDate\":1,\"source\":\"USD\",\"quotes\":[]}";
 
-        String message = currencyService.getLastQuotes();
+        String message = currencyService.getLastQuotes(Currency.USD);
 
         verify(exchangeQuoteRepository, times(1)).findFirstByOrderByQuotesDateDesc();
         assertEquals(expectedMessage, message);
@@ -53,7 +55,7 @@ public class CurrencyServiceTest {
         String expectedMessage = "[{\"id\":1,\"quotesDate\":1,\"source\":\"USD\",\"quotes\":null}]";
         when(exchangeQuoteRepository.findTop10ByOrderByQuotesDateDesc()).thenReturn(Collections.singletonList(exchangeQuote));
 
-        String message = currencyService.getQuotes();
+        String message = currencyService.getQuotes(Currency.USD);
 
         verify(exchangeQuoteRepository, times(1)).findTop10ByOrderByQuotesDateDesc();
         assertEquals(expectedMessage, message);

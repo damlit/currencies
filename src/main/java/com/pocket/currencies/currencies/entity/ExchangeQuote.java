@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,4 +28,9 @@ public class ExchangeQuote {
     @OneToMany(mappedBy = "exchangeQuote", fetch = FetchType.LAZY)
     private List<Quote> quotes;
 
+    public Optional<Quote> getQuoteForCurrency(Currency currency) {
+        return quotes.stream()
+                .filter(quote -> currency.equals(quote.getCurrency()))
+                .findFirst();
+    }
 }

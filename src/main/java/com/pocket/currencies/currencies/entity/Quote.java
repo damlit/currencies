@@ -36,4 +36,7 @@ public class Quote {
     @JoinColumn(name = "exchange_quote_id")
     private ExchangeQuote exchangeQuote;
 
+    public void setQuote(BigDecimal quote) {
+        this.quote = quote;
+    }
 }
