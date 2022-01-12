@@ -9,8 +9,10 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from './theme.styles';
 import { GlobalStyles } from './global.styled';
 import { Burger, Menu, useOnClickOutside } from './menu';
+
 import Quotes from './Quotes';
-import Profit from './Profit/Profit';
+import Profit from './Profit';
+import Deposits from './Deposits';
 
 const App = () => {
 
@@ -42,7 +44,10 @@ const App = () => {
         <BrowserRouter>
           <Switch>
             <Route path="/deposits">
-              <div>Deposits</div>
+              {token
+                ? <Deposits token={token} />
+                : <></>
+              }
             </Route>
             <Route path="/profit">
               {token
@@ -64,3 +69,12 @@ const App = () => {
 }
 
 export default App;
+
+// todo 
+// 1. extract select currencies (same in Deposits)
+// 2. Update currencies (only for admin - BE)
+// 3. Deposits - why alert occurs sometimes/sometimes aint
+// 4. CSS in EVERYWHERE
+// 5. pages in deposits
+// 6. refreshing token
+// 7. possibilites to choose quotes list date

@@ -10,3 +10,10 @@ export const getContentJsonHeader = () => {
     headers.append("Content-Type", "application/json");
     return headers;
 };
+
+export const getContentJsonHeaderWithAuthorization = (token) => {
+    var headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    headers.append("Authorization", "Bearer " + token);
+    return headers;
+};
