@@ -19,14 +19,14 @@ const Deposits = ({ token }) => {
         getDeposits(token, setDeposits, depositsPage);
     }, [token, depositsPage]);
 
-    const handleRemoveDeposit = (e, id) => {
-        removeDeposit(token, id);
+    const handleRemoveDeposit = async (e, id) => {
+        await removeDeposit(token, id);
         getDeposits(token, setDeposits, depositsPage);
     }
 
-    const handleAddDeposit = (e) => {
+    const handleAddDeposit = async (e) => {
         const deposit = new Deposit(soldCurrency, boughtCurrency, Number(quote), Number(soldSum));
-        addDeposit(token, deposit);
+        await addDeposit(token, deposit);
         getDeposits(token, setDeposits, depositsPage);
     }
 

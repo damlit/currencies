@@ -27,7 +27,7 @@ const Menu = ({ open, logout, isAdmin, token }) => {
         Logout
       </a>
       {isAdmin &&
-        <a href="/" tabIndex={tabIndex} onClick={() => updateCurrencies(token)}>
+        <a href="/" tabIndex={tabIndex} onClick={() => updateCurrencies(token)} role='button'>
           <span aria-hidden="true">🔂</span>
           Update
         </a>}

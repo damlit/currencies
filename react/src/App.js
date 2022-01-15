@@ -79,7 +79,6 @@ const App = () => {
 export default App;
 
 // todo
-// 3. Deposits - why alert occurs sometimes/sometimes aint
 // 4. CSS in EVERYWHERE
 // 5. pages in deposits
 // 6. refreshing token
