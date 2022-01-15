@@ -70,11 +70,12 @@ const App = () => {
 
 export default App;
 
-// todo 
-// 1. extract select currencies (same in Deposits)
+// todo
 // 2. Update currencies (only for admin - BE)
 // 3. Deposits - why alert occurs sometimes/sometimes aint
 // 4. CSS in EVERYWHERE
 // 5. pages in deposits
 // 6. refreshing token
 // 7. possibilites to choose quotes list date
+// 8. n+1 problem (BE)
+// 9. redux (clear after logout)

@@ -3,6 +3,7 @@ import { getLastCurrencies } from "../request/currencies.request";
 import PropTypes from 'prop-types';
 import { QuotesWrapper } from './Quotes.styled.js';
 import { getDateFromTimestamp } from "./quotes.utils";
+import ChooseCurrency from "../ChooseCurrency";
 
 const Quotes = ({ token }) => {
 
@@ -16,16 +17,11 @@ const Quotes = ({ token }) => {
     const handleChangeTargetCurrency = (e) => {
         setTargetCurrency(e.target.value);
     }
-    
+
     return <QuotesWrapper>
         <div key={"quotesTab"}>
             <span>Choose target currency: </span>
-            <select value={targetCurrency} onChange={handleChangeTargetCurrency}> 
-                <option value="PLN">PLN</option>
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-            </select>
+            <ChooseCurrency value={targetCurrency} onChangeHandler={handleChangeTargetCurrency} />
         </div>
         <div>
             <span>Date: {lastCurrencies && getDateFromTimestamp(lastCurrencies.quotesDate)}</span>

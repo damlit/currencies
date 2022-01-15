@@ -3,6 +3,7 @@ import { getDeposits, removeDeposit, addDeposit } from "../request/currencies.re
 import PropTypes from 'prop-types';
 import { DepositsWrapper } from "./Deposits.styled";
 import { Deposit } from "./deposit.types";
+import ChooseCurrency from "../ChooseCurrency";
 
 const Deposits = ({ token }) => {
 
@@ -42,16 +43,11 @@ const Deposits = ({ token }) => {
             <form onSubmit={handleAddDeposit} id="addDepositForm">
                 <label>
                     <p>Amount of sold currency</p>
-                    <input type="number" step="0.01" onChange={e => setSoldSum(e.target.value)} />
+                    <input type="number" onChange={e => setSoldSum(e.target.value)} />
                 </label>
                 <label>
                     <p>Sold currency</p>
-                    <select value={soldCurrency} onChange={handleSoldCurrency}>
-                        <option value="PLN">PLN</option>
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="GBP">GBP</option>
-                    </select>
+                    <ChooseCurrency value={soldCurrency} onChangeHandler={handleSoldCurrency}/>
                 </label>
                 <label>
                     <p>Quote</p>
@@ -59,12 +55,7 @@ const Deposits = ({ token }) => {
                 </label>
                 <label>
                     <p>Bought currency</p>
-                    <select value={boughtCurrency} onChange={handleBoughtCurrency}>
-                        <option value="PLN">PLN</option>
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="GBP">GBP</option>
-                    </select>
+                    <ChooseCurrency value={boughtCurrency} onChangeHandler={handleBoughtCurrency}/>
                 </label>
                 <div>
                     <button type="submit">Add</button>
