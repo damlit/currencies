@@ -27,13 +27,14 @@ export const sendConfirmationToken = async (token) => {
     return { status, textResponse };
 }
 
-export const isAdminUserRole = async (token) => {
+export const isAdminUserRole = async (token, setIsAdmin) => {
     const response = await getRequest('/api/v1/user/role', getAuthHeader(token));
-
     const status = await response.status;
     const textResponse = await response.text();
+
     if (status === 200 && textResponse === '"ADMIN"') {
-        return true;
+        setIsAdmin(true);
+    } else {
+        setIsAdmin(false);
     }
-    return false;
 }

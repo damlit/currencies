@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Login from './Login/Login';
@@ -13,6 +13,7 @@ import { Burger, Menu, useOnClickOutside } from './menu';
 import Quotes from './Quotes';
 import Profit from './Profit';
 import Deposits from './Deposits';
+import { isAdminUserRole } from './request/login.request';
 
 const App = () => {
 
@@ -22,12 +23,18 @@ const App = () => {
   const menuId = "main-menu";
 
   const { token, setToken, cleanToken } = useToken();
-  const [ isAdmin, setIsAdmin ] = useState(false);
+  const [isAdmin, setIsAdmin] = useState();
+
+  useEffect(() => {
+    if (token) {
+      isAdminUserRole(token, setIsAdmin);
+    }
+  }, [token]);
 
   if (!token) {
     return <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <Login setToken={setToken} setIsAdmin={setIsAdmin}/>
+      <Login setToken={setToken} setIsAdmin={setIsAdmin} />
     </ThemeProvider>;
   }
 
