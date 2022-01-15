@@ -53,6 +53,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userRepository.findByEmail(authentication.getName());
     }
 
+    public UserRole getActiveUserRole() {
+        return getActiveUser().getUserRole();
+    }
+
     private String createTokenForExistingUser(User userFromDb) {
         if (userFromDb.getEnabled()) {
             throw new EmailAlreadyExistsException();

@@ -22,11 +22,12 @@ const App = () => {
   const menuId = "main-menu";
 
   const { token, setToken, cleanToken } = useToken();
+  const [ isAdmin, setIsAdmin ] = useState(false);
 
   if (!token) {
     return <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <Login setToken={setToken} />
+      <Login setToken={setToken} setIsAdmin={setIsAdmin}/>
     </ThemeProvider>;
   }
 
@@ -37,7 +38,7 @@ const App = () => {
         <div ref={node}>
           <FocusLock disabled={!open}>
             <Burger open={open} setOpen={setOpen} aria-controls={menuId} />
-            <Menu open={open} setOpen={setOpen} id={menuId} logout={cleanToken} />
+            <Menu open={open} setOpen={setOpen} id={menuId} logout={cleanToken} isAdmin={isAdmin} token={token} />
           </FocusLock>
         </div>
         <h1>Application</h1>
@@ -71,7 +72,6 @@ const App = () => {
 export default App;
 
 // todo
-// 2. Update currencies (only for admin - BE)
 // 3. Deposits - why alert occurs sometimes/sometimes aint
 // 4. CSS in EVERYWHERE
 // 5. pages in deposits
@@ -79,3 +79,4 @@ export default App;
 // 7. possibilites to choose quotes list date
 // 8. n+1 problem (BE)
 // 9. redux (clear after logout)
+// 10. add role to redux

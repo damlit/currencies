@@ -1,14 +1,15 @@
 import React from 'react';
 import { bool, func } from 'prop-types';
 import { StyledMenu } from './Menu.styled';
+import { updateCurrencies } from '../../request/currencies.request';
 
-const Menu = ({ open, logout, ...props }) => {
-  
+const Menu = ({ open, logout, isAdmin, token }) => {
+
   const isHidden = open ? true : false;
   const tabIndex = isHidden ? 0 : -1;
 
   return (
-    <StyledMenu open={open} aria-hidden={!isHidden} {...props}>
+    <StyledMenu open={open} aria-hidden={!isHidden}>
       <a href="/deposits" tabIndex={tabIndex}>
         <span aria-hidden="true">💁🏻‍♂️</span>
         Deposits
@@ -16,15 +17,20 @@ const Menu = ({ open, logout, ...props }) => {
       <a href="/profit" tabIndex={tabIndex}>
         <span aria-hidden="true">💸</span>
         Profit
-        </a>
+      </a>
       <a href="/quotes" tabIndex={tabIndex}>
         <span aria-hidden="true">📈</span>
         Quotes
-        </a>
+      </a>
       <a href="/" tabIndex={tabIndex} onClick={() => logout()}>
         <span aria-hidden="true">👋</span>
         Logout
-        </a>
+      </a>
+      {isAdmin &&
+        <a href="/" tabIndex={tabIndex} onClick={() => updateCurrencies(token)}>
+          <span aria-hidden="true">🔂</span>
+          Update
+        </a>}
     </StyledMenu>
   )
 }

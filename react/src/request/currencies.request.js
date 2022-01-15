@@ -53,7 +53,17 @@ export const addDeposit = async (token, deposit) => {
     const response = await postRequest('/api/v1/pocket/deposit/add', getContentJsonHeaderWithAuthorization(token), body);
     const status = await response.status;
     const textResponse = await response.text();
-    console.log(textResponse);
+    if (status === 200) {
+        alert(textResponse);
+    } else {
+        alert('Something went wrong. Server response with code ' + status + ' (' + textResponse + ').');
+    }
+}
+
+export const updateCurrencies = async (token) => {
+    const response = await getRequest('/api/v1/currencies/update', getAuthHeader(token));
+    const status = await response.status;
+    const textResponse = await response.text();
     if (status === 200) {
         alert(textResponse);
     } else {

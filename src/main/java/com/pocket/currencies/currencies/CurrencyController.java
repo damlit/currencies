@@ -3,8 +3,11 @@ package com.pocket.currencies.currencies;
 import com.pocket.currencies.currencies.entity.Currency;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @AllArgsConstructor
@@ -26,10 +29,11 @@ public class CurrencyController {
     }
 
     @GetMapping(value = "/update")
-    public ResponseEntity<String> updateCurrencies() {
+    @ResponseStatus(HttpStatus.OK)
+    public String updateCurrencies() {
         if (currencyService.updateCurrencies()) {
-            return new ResponseEntity<>( "Quotes updated!", HttpStatus.OK);
+            return "Quotes updated!";
         }
-        return new ResponseEntity<>( "Quotes update failed!", HttpStatus.INTERNAL_SERVER_ERROR);
+        return "Quotes update failed!";
     }
 }
