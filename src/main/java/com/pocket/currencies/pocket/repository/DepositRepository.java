@@ -13,4 +13,5 @@ import java.util.List;
 public interface DepositRepository extends PagingAndSortingRepository<Deposit, Long> {
 
     List<Deposit> getAllByPocket(Pocket pocket, Pageable pageable);
+    Integer countAllByPocket(Pocket pocket);
 }

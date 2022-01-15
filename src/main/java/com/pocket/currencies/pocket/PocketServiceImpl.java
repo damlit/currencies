@@ -85,6 +85,13 @@ public class PocketServiceImpl implements PocketService {
         }
     }
 
+    @Override
+    public Integer getAmountOfDepositsForCurrentUser() {
+        Integer amountOfDeposits = depositRepository.countAllByPocket(getActiveUserPocket());
+        LOG.info("Amount of deposits equals " + amountOfDeposits + " (user=" + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
+        return amountOfDeposits;
+    }
+
     private Deposit createDepositFromDto(DepositDto depositDto) {
         Pocket pocket = getActiveUserPocket();
         return Deposit.builder()

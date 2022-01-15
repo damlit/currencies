@@ -8,4 +8,5 @@ public interface PocketService {
     String removeDeposit(long id);
     String calculateProfit();
     String getAllDepositsForCurrentUser(int page, int size);
+    Integer getAmountOfDepositsForCurrentUser();
 }

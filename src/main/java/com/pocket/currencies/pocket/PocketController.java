@@ -41,4 +41,10 @@ public class PocketController {
     public String getDeposits(@PathVariable int page, @PathVariable int size) {
         return pocketService.getAllDepositsForCurrentUser(page, size);
     }
+
+    @GetMapping(value = "/deposit/count")
+    @ResponseStatus(HttpStatus.OK)
+    public Integer getAmountOfDeposits() {
+        return pocketService.getAmountOfDepositsForCurrentUser();
+    }
 }
