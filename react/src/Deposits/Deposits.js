@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
-import { getDeposits, removeDeposit, addDeposit } from "../request/currencies.request";
+import { getDeposits, removeDeposit, addDeposit, getAmountOfDeposits } from "../request/currencies.request";
 import PropTypes from 'prop-types';
 import { DepositsWrapper } from "./Deposits.styled";
 import { Deposit } from "./deposit.types";
 import ChooseCurrency from "../ChooseCurrency";
+import { changeNumberToPages } from "./deposit.utils";
 
 const Deposits = ({ token }) => {
 
     const [deposits, setDeposits] = useState([]);
-    const [depositsPage, setDepositsPage] = useState(0);
+    const [currentDepositsPage, setCurrentDepositsPage] = useState(0);
+    const [depositsPages, setDepositsPages] = useState([]);
+    const [amountOfDeposits, setAmountOfDeposits] = useState([]);
 
     const [soldSum, setSoldSum] = useState(0.0);
     const [soldCurrency, setSoldCurrency] = useState('PLN');
@@ -16,18 +19,20 @@ const Deposits = ({ token }) => {
     const [boughtCurrency, setBoughtCurrency] = useState('EUR');
 
     useEffect(() => {
-        getDeposits(token, setDeposits, depositsPage);
-    }, [token, depositsPage]);
+        getDeposits(token, setDeposits, currentDepositsPage);
+        getAmountOfDeposits(token, setAmountOfDeposits);
+        changeNumberToPages(amountOfDeposits, 5, setDepositsPages);
+    }, [token, currentDepositsPage, amountOfDeposits]);
 
     const handleRemoveDeposit = async (e, id) => {
         await removeDeposit(token, id);
-        getDeposits(token, setDeposits, depositsPage);
+        getDeposits(token, setDeposits, currentDepositsPage);
     }
 
     const handleAddDeposit = async (e) => {
         const deposit = new Deposit(soldCurrency, boughtCurrency, Number(quote), Number(soldSum));
         await addDeposit(token, deposit);
-        getDeposits(token, setDeposits, depositsPage);
+        getDeposits(token, setDeposits, currentDepositsPage);
     }
 
     const handleSoldCurrency = (e) => {
@@ -36,6 +41,10 @@ const Deposits = ({ token }) => {
 
     const handleBoughtCurrency = (e) => {
         setBoughtCurrency(e.target.value);
+    }
+
+    const handleChangePageNumber = (e, pageNumber) => {
+        setCurrentDepositsPage(pageNumber - 1);
     }
 
     return <DepositsWrapper>
@@ -47,7 +56,7 @@ const Deposits = ({ token }) => {
                 </label>
                 <label>
                     <p>Sold currency</p>
-                    <ChooseCurrency value={soldCurrency} onChangeHandler={handleSoldCurrency}/>
+                    <ChooseCurrency value={soldCurrency} onChangeHandler={handleSoldCurrency} />
                 </label>
                 <label>
                     <p>Quote</p>
@@ -55,24 +64,29 @@ const Deposits = ({ token }) => {
                 </label>
                 <label>
                     <p>Bought currency</p>
-                    <ChooseCurrency value={boughtCurrency} onChangeHandler={handleBoughtCurrency}/>
+                    <ChooseCurrency value={boughtCurrency} onChangeHandler={handleBoughtCurrency} />
                 </label>
                 <div>
                     <button type="submit">Add</button>
                 </div>
             </form>
         </div>
-        <span>Your deposits:</span>
-        {deposits
-            ? deposits.map(deposit =>
-                <>
+        <div>
+            <span>Your deposits ({amountOfDeposits}):</span>
+            {deposits
+                ? deposits.map(deposit =>
                     <div key={deposit.id}>
                         {deposit.id}. {deposit.soldSum} {deposit.soldCurrency} has been sold for {deposit.boughtSum} {deposit.boughtCurrency}.
-                        <button onClick={ev => handleRemoveDeposit(ev, deposit.id)}>Remove</button>
+                        <button onClick={e => handleRemoveDeposit(e, deposit.id)}>Remove</button>
                     </div>
-                </>
-            )
-            : ""}
+                )
+                : ""}
+            {depositsPages
+                ? depositsPages.map(pageNumber =>
+                    <button onClick={e => handleChangePageNumber(e, pageNumber)}>{pageNumber}</button>
+                )
+                : ""}
+        </div>
     </DepositsWrapper>
 }
 

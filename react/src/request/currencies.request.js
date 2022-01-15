@@ -26,13 +26,26 @@ export const getProfit = async (token, setState) => {
 }
 
 export const getDeposits = async (token, setState, page) => {
-    const response = await getRequest('/api/v1/pocket/deposit/' + page + '/10', getAuthHeader(token));
+    const response = await getRequest('/api/v1/pocket/deposit/' + page + '/5', getAuthHeader(token));
     const status = await response.status;
     if (status === 200) {
         const jsonResponse = await response.json();
         setState(jsonResponse);
     } else {
         const textResponse = await response.text();
+        alert('Something went wrong. Server response with code ' + status + ' (' + textResponse + ').');
+    }
+}
+
+export const getAmountOfDeposits = async (token, setState) => {
+    const response = await getRequest('/api/v1/pocket/deposit/count', getAuthHeader(token));
+    const status = await response.status;
+    const textResponse = await response.text();
+    if (status === 200) {
+        const numberOfDeposits = Number(textResponse);
+        setState(numberOfDeposits);
+    } else {
+        setState(0);
         alert('Something went wrong. Server response with code ' + status + ' (' + textResponse + ').');
     }
 }
