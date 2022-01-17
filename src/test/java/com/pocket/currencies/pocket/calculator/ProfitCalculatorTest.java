@@ -54,7 +54,7 @@ public class ProfitCalculatorTest {
 
         BigDecimal profit = profitCalculator.calculateProfit(pocket);
 
-        assertEquals("1.52", profit.toPlainString());
+        assertEquals("1.51", profit.toPlainString());
     }
 
     @Test
@@ -67,7 +67,7 @@ public class ProfitCalculatorTest {
 
         BigDecimal profit = profitCalculator.calculateProfit(pocket);
 
-        assertEquals("-2.56", profit.toPlainString());
+        assertEquals("-2.57", profit.toPlainString());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class ProfitCalculatorTest {
 
         BigDecimal profit = profitCalculator.calculateProfit(pocket);
 
-        assertEquals("2.56", profit.toPlainString());
+        assertEquals("2.57", profit.toPlainString());
     }
 
     @Test
@@ -93,7 +93,7 @@ public class ProfitCalculatorTest {
 
         BigDecimal profit = profitCalculator.calculateProfit(pocket);
 
-        assertEquals("1.12", profit.toPlainString());
+        assertEquals("1.11", profit.toPlainString());
     }
 
     private Deposit createMockDeposit(Currency boughtCurrency, Currency soldCurrency, BigDecimal quote) {

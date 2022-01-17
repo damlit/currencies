@@ -57,6 +57,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return getActiveUser().getUserRole();
     }
 
+    public boolean isAdminUser() {
+        return UserRole.ADMIN.equals(getActiveUserRole());
+    }
+
     private String createTokenForExistingUser(User userFromDb) {
         if (userFromDb.getEnabled()) {
             throw new EmailAlreadyExistsException();

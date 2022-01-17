@@ -10,4 +10,5 @@ public interface UserService {
     int enableUser(String email);
     User getActiveUser();
     UserRole getActiveUserRole();
+    boolean isAdminUser();
 }

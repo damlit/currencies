@@ -5,6 +5,7 @@ import com.pocket.currencies.currencies.entity.ExchangeQuote;
 import com.pocket.currencies.currencies.exception.UpdateCurrenciesFailedException;
 import com.pocket.currencies.currencies.repository.ExchangeQuoteRepository;
 import com.pocket.currencies.currencies.repository.QuoteRepository;
+import com.pocket.currencies.users.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,16 +35,19 @@ public class QuotesServiceTest {
     private QuoteRepository quoteRepository;
     @Mock
     private QuotesClient quotesClient;
+    @Mock
+    private UserService userService;
 
     @BeforeEach
     public void setup() {
-        quotesService = new QuotesServiceImpl(exchangeQuoteRepository, quoteRepository, quotesClient);
+        quotesService = new QuotesServiceImpl(exchangeQuoteRepository, quoteRepository, quotesClient, userService);
     }
 
     @Test
     public void shouldParseResponseToExchangeQuote() throws IOException {
         Path pathToJsonBodyResponse = Paths.get("src/test/resources/quotes-client-response.json");
         String responseBody = Files.readString(pathToJsonBodyResponse);
+        when(userService.isAdminUser()).thenReturn(true);
         when(quotesClient.getQuotesFromService()).thenReturn(responseBody);
 
         quotesService.updateQuotes();
@@ -61,11 +65,22 @@ public class QuotesServiceTest {
 
     @Test
     public void shouldThrowExceptionWhenTheseQuotesExists() throws IOException {
-        quotesService = new QuotesServiceImpl(exchangeQuoteRepository, quoteRepository, quotesClient);
         Path pathToJsonBodyResponse = Paths.get("src/test/resources/quotes-client-response.json");
         String responseBody = Files.readString(pathToJsonBodyResponse);
         when(quotesClient.getQuotesFromService()).thenReturn(responseBody);
         when(exchangeQuoteRepository.findFirstByOrderByQuotesDateDesc()).thenReturn(createExchangeQuote());
+        when(userService.isAdminUser()).thenReturn(true);
+
+        Assertions.assertThrows(UpdateCurrenciesFailedException.class, () -> quotesService.updateQuotes());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenUserIsNotAdmin() throws IOException {
+        Path pathToJsonBodyResponse = Paths.get("src/test/resources/quotes-client-response.json");
+        String responseBody = Files.readString(pathToJsonBodyResponse);
+        when(quotesClient.getQuotesFromService()).thenReturn(responseBody);
+        when(exchangeQuoteRepository.findFirstByOrderByQuotesDateDesc()).thenReturn(createExchangeQuote());
+        when(userService.isAdminUser()).thenReturn(false);
 
         Assertions.assertThrows(UpdateCurrenciesFailedException.class, () -> quotesService.updateQuotes());
     }

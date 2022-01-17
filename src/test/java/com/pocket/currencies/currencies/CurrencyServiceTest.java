@@ -4,6 +4,7 @@ import com.pocket.currencies.client.QuotesService;
 import com.pocket.currencies.currencies.entity.Currency;
 import com.pocket.currencies.currencies.entity.ExchangeQuote;
 import com.pocket.currencies.currencies.repository.ExchangeQuoteRepository;
+import com.pocket.currencies.users.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +31,8 @@ public class CurrencyServiceTest {
     private QuotesService quotesService;
     @Mock
     private ExchangeQuoteRepository exchangeQuoteRepository;
+    @Mock
+    private UserService userService;
 
     @BeforeEach
     public void setup() {
@@ -51,8 +54,8 @@ public class CurrencyServiceTest {
     @Test
     @WithMockUser
     public void shouldGetLast10Quotes() {
-        ExchangeQuote exchangeQuote = new ExchangeQuote(1, new Date(1L), "USD", null);
-        String expectedMessage = "[{\"id\":1,\"quotesDate\":1,\"source\":\"USD\",\"quotes\":null}]";
+        ExchangeQuote exchangeQuote = new ExchangeQuote(1, new Date(1L), "USD", new ArrayList<>());
+        String expectedMessage = "[{\"id\":1,\"quotesDate\":1,\"source\":\"USD\",\"quotes\":[]}]";
         when(exchangeQuoteRepository.findTop10ByOrderByQuotesDateDesc()).thenReturn(Collections.singletonList(exchangeQuote));
 
         String message = currencyService.getQuotes(Currency.USD);

@@ -4,6 +4,10 @@ import com.pocket.currencies.client.QuotesClient;
 import com.pocket.currencies.currencies.entity.ExchangeQuote;
 import com.pocket.currencies.currencies.repository.ExchangeQuoteRepository;
 import com.pocket.currencies.currencies.repository.QuoteRepository;
+import com.pocket.currencies.users.UserService;
+import com.pocket.currencies.users.entity.User;
+import com.pocket.currencies.users.entity.UserRole;
+import com.pocket.currencies.users.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,24 +45,28 @@ public class CurrencyControllerIntegrationTest {
     private ExchangeQuoteRepository exchangeQuoteRepository;
     @Autowired
     private QuoteRepository quoteRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
     @MockBean
     private QuotesClient quotesClient;
 
     @Test
-    @WithMockUser
+    @WithMockUser()
     public void testGetLastCurrencies() throws Exception {
         String expectedResponse = "{\"id\":1,\"quotesDate\":null,\"source\":null,\"quotes\":[]}";
         ExchangeQuote exchangeQuote = ExchangeQuote.builder().id(1).build();
         exchangeQuoteRepository.save(exchangeQuote);
 
-        this.mvc.perform(get(CURRENCY_ENDPOINT + "/last")
+        this.mvc.perform(get(CURRENCY_ENDPOINT + "/last?currency=PLN")
                 .accept(MediaType.ALL))
                 .andExpect(status().isOk())
                 .andExpect(content().string(expectedResponse));
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser()
     public void testGetLastCurrenciesChooseByDate() throws Exception {
         String expectedResponse = "{\"id\":2,\"quotesDate\":2,\"source\":null,\"quotes\":[]}";
         ExchangeQuote exchangeQuote = ExchangeQuote.builder().id(1).quotesDate(new Date(1L)).build();
@@ -66,14 +74,14 @@ public class CurrencyControllerIntegrationTest {
         exchangeQuoteRepository.save(exchangeQuote);
         exchangeQuoteRepository.save(exchangeQuote2);
 
-        this.mvc.perform(get(CURRENCY_ENDPOINT + "/last")
+        this.mvc.perform(get(CURRENCY_ENDPOINT + "/last?currency=PLN")
                 .accept(MediaType.ALL))
                 .andExpect(status().isOk())
                 .andExpect(content().string(expectedResponse));
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser()
     public void testGetQuotes() throws Exception {
         String expectedResponse = "[{\"id\":2,\"quotesDate\":null,\"source\":null,\"quotes\":[]},"
                 + "{\"id\":1,\"quotesDate\":null,\"source\":null,\"quotes\":[]}]";
@@ -82,17 +90,18 @@ public class CurrencyControllerIntegrationTest {
         exchangeQuoteRepository.save(exchangeQuote);
         exchangeQuoteRepository.save(exchangeQuote2);
 
-        this.mvc.perform(get(CURRENCY_ENDPOINT + "/quotes")
+        this.mvc.perform(get(CURRENCY_ENDPOINT + "/quotes?currency=PLN")
                 .accept(MediaType.ALL))
                 .andExpect(status().isOk())
                 .andExpect(content().string(expectedResponse));
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(username = "test@test.pl", roles={"ADMIN"})
     public void testUpdateQuotes() throws Exception {
         Path pathToJsonBodyResponse = Paths.get("src/test/resources/quotes-client-response.json");
         String responseBody = Files.readString(pathToJsonBodyResponse);
+        userRepository.save(new User(1, "test@test.pl", "xx", UserRole.ADMIN, false, true, null));
         when(quotesClient.getQuotesFromService()).thenReturn(responseBody);
         String expectedResponse = "Quotes updated!";
 

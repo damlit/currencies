@@ -9,6 +9,7 @@ import com.pocket.currencies.currencies.entity.Quote;
 import com.pocket.currencies.currencies.exception.UpdateCurrenciesFailedException;
 import com.pocket.currencies.currencies.repository.ExchangeQuoteRepository;
 import com.pocket.currencies.currencies.repository.QuoteRepository;
+import com.pocket.currencies.users.UserService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ public class QuotesServiceImpl implements QuotesService {
     private final ExchangeQuoteRepository exchangeQuoteRepository;
     private final QuoteRepository quoteRepository;
     private final QuotesClient quotesClient;
+    private final UserService userService;
 
     private static final Integer TIMESTAMP_MULTIPLIER = 1000;
 
@@ -40,14 +42,17 @@ public class QuotesServiceImpl implements QuotesService {
         QuotesResponse quotesResponse = parseToObject(response);
 
         ExchangeQuote exchangeQuote = createExchangeQuoteFromResponse(quotesResponse);
-        if (isNotQuotesFromLastUpdate(exchangeQuote)) {
+        if (isNotQuotesFromLastUpdate(exchangeQuote) && userService.isAdminUser()) {
             LOG.info("Saving new quotes");
             List<Quote> quotes = createQuotesFromResponse(quotesResponse, exchangeQuote);
             quoteRepository.saveAll(quotes);
             exchangeQuote.setQuotes(quotes);
             exchangeQuoteRepository.save(exchangeQuote);
+        } else if(!userService.isAdminUser()) {
+            LOG.info("This user hasn't access to update quotes.");
+            throw new UpdateCurrenciesFailedException();
         } else {
-            LOG.info("Quotes are updated already");
+            LOG.info("Quotes are updated already.");
             throw new UpdateCurrenciesFailedException();
         }
     }

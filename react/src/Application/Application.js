@@ -64,7 +64,4 @@ export default Application;
 // 6. refreshing token
 // 7. possibilites to choose quotes list date
 // 8. n+1 problem (BE)
-// 9. redux (clear after logout)
-// 10. add role to redux
-// 11. hasRole in update BE
 // 
