@@ -5,14 +5,14 @@ import { QuotesWrapper } from './Quotes.styled.js';
 import { getDateFromTimestamp } from "./quotes.utils";
 import ChooseCurrency from "../ChooseCurrency";
 
-const Quotes = ({ token }) => {
+const Quotes = () => {
 
     const [targetCurrency, setTargetCurrency] = useState('PLN');
     const [lastCurrencies, setLastCurrencies] = useState();
 
     useEffect(() => {
-        getLastCurrencies(token, setLastCurrencies, targetCurrency);
-    }, [token, targetCurrency]);
+        getLastCurrencies(setLastCurrencies, targetCurrency);
+    }, [targetCurrency]);
 
     const handleChangeTargetCurrency = (e) => {
         setTargetCurrency(e.target.value);

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-const useToken = () => {
+export const TOKEN_KEY = 'token';
 
-    const TOKEN_KEY = 'token';
+const useToken = () => {
 
     const getToken = () => {
         const tokenString = localStorage.getItem(TOKEN_KEY);

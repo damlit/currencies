@@ -1,8 +1,8 @@
 import { getRequest, postRequest } from "./util/request.util";
 import { getAuthHeader, getContentJsonHeaderWithAuthorization } from "./util/headers.utils";
 
-export const getLastCurrencies = async (token, setState, currency) => {
-    const response = await getRequest('/api/v1/currencies/last?currency=' + currency, getAuthHeader(token));
+export const getLastCurrencies = async (setState, currency) => {
+    const response = await getRequest('/api/v1/currencies/last?currency=' + currency, getAuthHeader());
     const status = await response.status;
     if (status === 200) {
         const jsonResponse = await response.json();
@@ -13,8 +13,8 @@ export const getLastCurrencies = async (token, setState, currency) => {
     }
 }
 
-export const getProfit = async (token, setState) => {
-    const response = await getRequest('/api/v1/pocket/profit', getAuthHeader(token));
+export const getProfit = async (setState) => {
+    const response = await getRequest('/api/v1/pocket/profit', getAuthHeader());
     const status = await response.status;
     if (status === 200) {
         const jsonResponse = await response.json();
@@ -25,8 +25,8 @@ export const getProfit = async (token, setState) => {
     }
 }
 
-export const getDeposits = async (token, setState, page) => {
-    const response = await getRequest('/api/v1/pocket/deposit/' + page + '/5', getAuthHeader(token));
+export const getDeposits = async (setState, page) => {
+    const response = await getRequest('/api/v1/pocket/deposit/' + page + '/5', getAuthHeader());
     const status = await response.status;
     if (status === 200) {
         const jsonResponse = await response.json();
@@ -37,8 +37,8 @@ export const getDeposits = async (token, setState, page) => {
     }
 }
 
-export const getAmountOfDeposits = async (token, setState) => {
-    const response = await getRequest('/api/v1/pocket/deposit/count', getAuthHeader(token));
+export const getAmountOfDeposits = async (setState) => {
+    const response = await getRequest('/api/v1/pocket/deposit/count', getAuthHeader());
     const status = await response.status;
     const textResponse = await response.text();
     if (status === 200) {
@@ -50,8 +50,8 @@ export const getAmountOfDeposits = async (token, setState) => {
     }
 }
 
-export const removeDeposit = async (token, id) => {
-    const response = await getRequest('/api/v1/pocket/deposit/remove/' + id, getAuthHeader(token));
+export const removeDeposit = async (id) => {
+    const response = await getRequest('/api/v1/pocket/deposit/remove/' + id, getAuthHeader());
     const status = await response.status;
     const textResponse = await response.text();
     if (status === 200) {
@@ -61,9 +61,9 @@ export const removeDeposit = async (token, id) => {
     }
 }
 
-export const addDeposit = async (token, deposit) => {
+export const addDeposit = async (deposit) => {
     const body = JSON.stringify(deposit);
-    const response = await postRequest('/api/v1/pocket/deposit/add', getContentJsonHeaderWithAuthorization(token), body);
+    const response = await postRequest('/api/v1/pocket/deposit/add', getContentJsonHeaderWithAuthorization(), body);
     const status = await response.status;
     const textResponse = await response.text();
     if (status === 200) {
@@ -73,8 +73,8 @@ export const addDeposit = async (token, deposit) => {
     }
 }
 
-export const updateCurrencies = async (token) => {
-    const response = await getRequest('/api/v1/currencies/update', getAuthHeader(token));
+export const updateCurrencies = async () => {
+    const response = await getRequest('/api/v1/currencies/update', getAuthHeader());
     const status = await response.status;
     const textResponse = await response.text();
     if (status === 200) {

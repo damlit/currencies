@@ -1,5 +1,5 @@
 import { getRequest, postRequest } from "./util/request.util";
-import { getAuthHeader, getContentJsonHeader } from "./util/headers.utils";
+import { getContentJsonHeader } from "./util/headers.utils";
 
 export const getAuthToken = async (email, password) => {
     var body = JSON.stringify({ email, password });
@@ -25,16 +25,4 @@ export const sendConfirmationToken = async (token) => {
     const status = await response.status;
     const textResponse = await response.text();
     return { status, textResponse };
-}
-
-export const isAdminUserRole = async (token, setIsAdmin) => {
-    const response = await getRequest('/api/v1/user/role', getAuthHeader(token));
-    const status = await response.status;
-    const textResponse = await response.text();
-
-    if (status === 200 && textResponse === '"ADMIN"') {
-        setIsAdmin(true);
-    } else {
-        setIsAdmin(false);
-    }
 }

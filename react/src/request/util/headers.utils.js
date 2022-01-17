@@ -1,7 +1,10 @@
+import { TOKEN_KEY } from "../../token/useToken";
 
-export const getAuthHeader = (token) => {
+export const getAuthHeader = () => {
     var headers = new Headers();
-    headers.append("Authorization", "Bearer " + token);
+    const tokenString = localStorage.getItem(TOKEN_KEY);
+    const userToken = JSON.parse(tokenString);
+    headers.append("Authorization", "Bearer " + userToken);
     return headers;
 };
 
@@ -11,9 +14,8 @@ export const getContentJsonHeader = () => {
     return headers;
 };
 
-export const getContentJsonHeaderWithAuthorization = (token) => {
-    var headers = new Headers();
+export const getContentJsonHeaderWithAuthorization = () => {
+    var headers = getAuthHeader();
     headers.append("Content-Type", "application/json");
-    headers.append("Authorization", "Bearer " + token);
     return headers;
 };

@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { getDeposits, removeDeposit, addDeposit, getAmountOfDeposits } from "../request/currencies.request";
-import PropTypes from 'prop-types';
 import { DepositsWrapper } from "./Deposits.styled";
 import { Deposit } from "./deposit.types";
 import ChooseCurrency from "../ChooseCurrency";
 import { changeNumberToPages } from "./deposit.utils";
 
-const Deposits = ({ token }) => {
+const Deposits = () => {
 
     const [deposits, setDeposits] = useState([]);
     const [currentDepositsPage, setCurrentDepositsPage] = useState(0);
@@ -19,20 +18,20 @@ const Deposits = ({ token }) => {
     const [boughtCurrency, setBoughtCurrency] = useState('EUR');
 
     useEffect(() => {
-        getDeposits(token, setDeposits, currentDepositsPage);
-        getAmountOfDeposits(token, setAmountOfDeposits);
+        getDeposits(setDeposits, currentDepositsPage);
+        getAmountOfDeposits(setAmountOfDeposits);
         changeNumberToPages(amountOfDeposits, 5, setDepositsPages);
-    }, [token, currentDepositsPage, amountOfDeposits]);
+    }, [currentDepositsPage, amountOfDeposits]);
 
     const handleRemoveDeposit = async (e, id) => {
-        await removeDeposit(token, id);
-        getDeposits(token, setDeposits, currentDepositsPage);
+        await removeDeposit(id);
+        getDeposits(setDeposits, currentDepositsPage);
     }
 
     const handleAddDeposit = async (e) => {
         const deposit = new Deposit(soldCurrency, boughtCurrency, Number(quote), Number(soldSum));
-        await addDeposit(token, deposit);
-        getDeposits(token, setDeposits, currentDepositsPage);
+        await addDeposit(deposit);
+        getDeposits(setDeposits, currentDepositsPage);
     }
 
     const handleSoldCurrency = (e) => {
@@ -89,9 +88,5 @@ const Deposits = ({ token }) => {
         </div>
     </DepositsWrapper>
 }
-
-Deposits.propTypes = {
-    token: PropTypes.string.isRequired
-};
 
 export default Deposits;

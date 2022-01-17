@@ -4,6 +4,7 @@ import { getAuthToken, getRegistrationToken, sendConfirmationToken } from '../re
 import { LoginWrapper } from './Login.styled.js';
 
 const Login = ({ setToken }) => {
+
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [signUp, setSignUp] = useState();
@@ -16,6 +17,7 @@ const Login = ({ setToken }) => {
     if (status === 200 || status === 201) {
       setToken(token);
     } else {
+      setToken(null);
       alert('Something went wrong. Server response with code ' + status + ' (' + token + ').');
     }
   }
@@ -34,7 +36,7 @@ const Login = ({ setToken }) => {
   const handleConfirmationToken = async e => {
     e.preventDefault();
     const { status, textResponse } = await sendConfirmationToken(signUpToken);
-    
+
     alert(textResponse);
     if (status === 200) {
       document.getElementById("userForm").reset();
