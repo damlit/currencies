@@ -63,5 +63,4 @@ export default Application;
 // 4. CSS in EVERYWHERE
 // 6. refreshing token
 // 7. possibilites to choose quotes list date
-// 8. n+1 problem (BE)
 // 
