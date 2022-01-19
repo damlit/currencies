@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getProfit } from "../request/currencies.request";
+import { BorderLabel, BorderWrapper } from "../SmallComponents/BorderComponents.styled";
 import { ProfitWrapper } from "./Profit.styles";
 
 const Profit = () => {
@@ -10,7 +11,11 @@ const Profit = () => {
     }, []);
 
     return <ProfitWrapper>
-        <span>If you will sell all currencies today your profit equals: {userProfit.profit} PLN</span>
+        <BorderWrapper>
+            <span>If you will sell all currencies today your profit equals:
+                {<BorderLabel dotted>{userProfit.profit} PLN</BorderLabel>}
+            </span>
+        </BorderWrapper>
     </ProfitWrapper>
 }
 

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { QuotesWrapper } from './Quotes.styled.js';
 import { getDateFromTimestamp } from "./quotes.utils";
 import ChooseCurrency from "../ChooseCurrency";
+import { BorderLabel, BorderWrapper } from "../SmallComponents/BorderComponents.styled";
 
 const Quotes = () => {
 
@@ -19,19 +20,22 @@ const Quotes = () => {
     }
 
     return <QuotesWrapper>
-        <div key={"quotesTab"}>
+        <BorderWrapper key={"quotesTab"}>
             <span>Choose target currency: </span>
             <ChooseCurrency value={targetCurrency} onChangeHandler={handleChangeTargetCurrency} />
-        </div>
+        </BorderWrapper>
         <div>
-            <span>Date: {lastCurrencies && getDateFromTimestamp(lastCurrencies.quotesDate)}</span>
-            {lastCurrencies
-                ? lastCurrencies.quotes.map(quote =>
-                    <div key={quote.id}>
-                        {quote.currency} has quote {quote.quote}
-                    </div>
-                )
-                : ""}
+            <BorderWrapper>
+                <BorderLabel dotted>
+                    <span>Date: {lastCurrencies && getDateFromTimestamp(lastCurrencies.quotesDate)}</span></BorderLabel>
+                {lastCurrencies
+                    ? lastCurrencies.quotes.map(quote =>
+                        <div key={quote.id}>
+                            {quote.currency} has quote {quote.quote}
+                        </div>
+                    )
+                    : ""}
+            </BorderWrapper>
         </div>
     </QuotesWrapper>
 }

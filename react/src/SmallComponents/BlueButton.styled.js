@@ -33,6 +33,6 @@ export const ButtonToggle = styled(BlueButton)`
         `}
 `;
 
-const ButtonGroup = styled.div`
+export const ButtonGroup = styled.div`
     display: flex;
 `;

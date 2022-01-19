@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { getDeposits, removeDeposit, addDeposit, getAmountOfDeposits } from "../request/currencies.request";
-import { DepositsWrapper } from "./Deposits.styled";
+import { DepositsWrapper, DepositLabel } from "./Deposits.styled";
 import { Deposit } from "./deposit.types";
 import ChooseCurrency from "../ChooseCurrency";
 import { changeNumberToPages } from "./deposit.utils";
-import { BlueButton } from "../Buttons/BlueButton.styled";
+import { BlueButton, ButtonGroup, ButtonToggle } from "../SmallComponents/BlueButton.styled";
+import { BorderLabel, BorderForm, BorderWrapper } from "../SmallComponents/BorderComponents.styled";
 
 const Deposits = () => {
 
@@ -49,44 +50,52 @@ const Deposits = () => {
 
     return <DepositsWrapper>
         <div>
-            <form onSubmit={handleAddDeposit} id="addDepositForm">
-                <label>
+            <BorderForm onSubmit={handleAddDeposit} id="addDepositForm">
+                <BorderLabel dotted>
                     <p>Amount of sold currency</p>
                     <input type="number" onChange={e => setSoldSum(e.target.value)} />
-                </label>
-                <label>
+                </BorderLabel>
+                <BorderLabel dotted>
                     <p>Sold currency</p>
                     <ChooseCurrency value={soldCurrency} onChangeHandler={handleSoldCurrency} />
-                </label>
-                <label>
+                </BorderLabel>
+                <BorderLabel dotted>
                     <p>Quote</p>
                     <input type="number" step="0.0001" onChange={e => setQuote(e.target.value)} />
-                </label>
-                <label>
+                </BorderLabel>
+                <BorderLabel dotted>
                     <p>Bought currency</p>
                     <ChooseCurrency value={boughtCurrency} onChangeHandler={handleBoughtCurrency} />
-                </label>
+                </BorderLabel>
                 <div>
                     <BlueButton type="submit">Add</BlueButton>
                 </div>
-            </form>
+            </BorderForm>
         </div>
-        <div>
+        <BorderWrapper>
             <span>Your deposits ({amountOfDeposits}):</span>
-            {deposits
-                ? deposits.map(deposit =>
-                    <div key={deposit.id}>
-                        {deposit.id}. {deposit.soldSum} {deposit.soldCurrency} has been sold for {deposit.boughtSum} {deposit.boughtCurrency}.
-                        <BlueButton onClick={e => handleRemoveDeposit(e, deposit.id)}>Remove</BlueButton>
-                    </div>
-                )
-                : ""}
-            {depositsPages
-                ? depositsPages.map(pageNumber =>
-                    <BlueButton onClick={e => handleChangePageNumber(e, pageNumber)}>{pageNumber}</BlueButton>
-                )
-                : ""}
-        </div>
+            <BorderWrapper dotted>
+                {deposits
+                    ? deposits.map(deposit =>
+                        <BorderWrapper key={'depositNr_' + deposit.id} thin>
+                            <DepositLabel>{deposit.soldSum} {deposit.soldCurrency} has been sold for {deposit.boughtSum} {deposit.boughtCurrency} (id={deposit.id}).</DepositLabel>
+                            <BlueButton onClick={e => handleRemoveDeposit(e, deposit.id)}>Remove</BlueButton>
+                        </BorderWrapper>
+                    )
+                    : ""}
+            </BorderWrapper>
+            <DepositsWrapper>
+                <ButtonGroup>
+                    {depositsPages
+                        ? depositsPages.map(pageNumber =>
+                            <ButtonToggle onClick={e => handleChangePageNumber(e, pageNumber)} active={pageNumber === currentDepositsPage + 1}>
+                                {pageNumber}
+                            </ButtonToggle>
+                        )
+                        : ""}
+                </ButtonGroup>
+            </DepositsWrapper>
+        </BorderWrapper>
     </DepositsWrapper>
 }
 

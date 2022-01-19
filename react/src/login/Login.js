@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { getAuthToken, getRegistrationToken, sendConfirmationToken } from '../request/login.request';
 import { LoginWrapper } from './Login.styled.js';
-import { BlueButton, ButtonToggle } from "../Buttons/BlueButton.styled";
-import { ButtonGroup } from 'reactstrap';
+import { BlueButton, ButtonToggle, ButtonGroup } from "../SmallComponents/BlueButton.styled";
 
 const Login = ({ setToken }) => {
 
