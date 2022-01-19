@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { getAuthToken, getRegistrationToken, sendConfirmationToken } from '../request/login.request';
 import { LoginWrapper } from './Login.styled.js';
+import { BlueButton, ButtonToggle } from "../Buttons/BlueButton.styled";
+import { ButtonGroup } from 'reactstrap';
 
 const Login = ({ setToken }) => {
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [signUp, setSignUp] = useState();
-  const [signUpToken, setSignUpToken] = useState();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [signUp, setSignUp] = useState(false);
+  const [signUpToken, setSignUpToken] = useState('');
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -47,8 +49,14 @@ const Login = ({ setToken }) => {
 
   return (
     <LoginWrapper>
-      <button onClick={() => setSignUp(false)}>login</button>
-      <button onClick={() => setSignUp(true)}>sign up</button>
+      <ButtonGroup>
+        <ButtonToggle active={!signUp} onClick={() => setSignUp(false)}>
+          login
+        </ButtonToggle>
+        <ButtonToggle active={signUp} onClick={() => setSignUp(true)}>
+          sign up
+        </ButtonToggle>
+      </ButtonGroup>
       {signUp
         ? <h1>Please Sign Up</h1>
         : <h1>Please Log In</h1>
@@ -63,7 +71,7 @@ const Login = ({ setToken }) => {
           <input type="password" onChange={e => setPassword(e.target.value)} />
         </label>
         <div>
-          <button type="submit">Submit</button>
+          <BlueButton type="submit">Submit</BlueButton>
         </div>
       </form>
       {signUp &&
@@ -73,7 +81,7 @@ const Login = ({ setToken }) => {
             <input type="text" onChange={e => setSignUpToken(e.target.value)} />
           </label>
           <div>
-            <button type="confirm">Confirm</button>
+            <BlueButton type="confirm">Confirm</BlueButton>
           </div>
         </form>
       }

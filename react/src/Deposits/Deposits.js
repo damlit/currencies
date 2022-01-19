@@ -4,6 +4,7 @@ import { DepositsWrapper } from "./Deposits.styled";
 import { Deposit } from "./deposit.types";
 import ChooseCurrency from "../ChooseCurrency";
 import { changeNumberToPages } from "./deposit.utils";
+import { BlueButton } from "../Buttons/BlueButton.styled";
 
 const Deposits = () => {
 
@@ -66,7 +67,7 @@ const Deposits = () => {
                     <ChooseCurrency value={boughtCurrency} onChangeHandler={handleBoughtCurrency} />
                 </label>
                 <div>
-                    <button type="submit">Add</button>
+                    <BlueButton type="submit">Add</BlueButton>
                 </div>
             </form>
         </div>
@@ -76,13 +77,13 @@ const Deposits = () => {
                 ? deposits.map(deposit =>
                     <div key={deposit.id}>
                         {deposit.id}. {deposit.soldSum} {deposit.soldCurrency} has been sold for {deposit.boughtSum} {deposit.boughtCurrency}.
-                        <button onClick={e => handleRemoveDeposit(e, deposit.id)}>Remove</button>
+                        <BlueButton onClick={e => handleRemoveDeposit(e, deposit.id)}>Remove</BlueButton>
                     </div>
                 )
                 : ""}
             {depositsPages
                 ? depositsPages.map(pageNumber =>
-                    <button onClick={e => handleChangePageNumber(e, pageNumber)}>{pageNumber}</button>
+                    <BlueButton onClick={e => handleChangePageNumber(e, pageNumber)}>{pageNumber}</BlueButton>
                 )
                 : ""}
         </div>
