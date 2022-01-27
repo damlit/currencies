@@ -4,7 +4,7 @@ import store from './redux/store';
 
 import { ThemeProvider } from 'styled-components';
 import { theme } from './theme.styles';
-import { GlobalStyles } from './global.styled';
+import { GlobalBody, GlobalStyles, Logo, LogoText } from './global.styled';
 import Application from './Application';
 
 const App = () => {
@@ -13,19 +13,15 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <GlobalStyles />
-        <Application/>
+        <Logo>
+          <LogoText>Currency</LogoText>
+        </Logo>
+        <GlobalBody>
+          <Application />
+        </GlobalBody>
       </Provider>
     </ThemeProvider>
   );
 }
 
 export default App;
-
-// todo
-// 4. CSS in EVERYWHERE
-// 5. pages in deposits
-// 6. refreshing token
-// 7. possibilites to choose quotes list date
-// 8. n+1 problem (BE)
-// 9. redux (clear after logout)
-// 10. add role to redux

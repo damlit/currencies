@@ -39,7 +39,6 @@ const Application = () => {
                     <Menu open={open} setOpen={setOpen} id={menuId} logout={cleanToken} />
                 </FocusLock>
             </div>
-            <h1>Application</h1>
             <BrowserRouter>
                 <Switch>
                     <Route path="/deposits">
