@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { getDeposits, removeDeposit, addDeposit, getAmountOfDeposits } from "../request/currencies.request";
-import { DepositsWrapper, DepositLabel } from "./Deposits.styled";
+import { DepositsWrapper, DepositLabel, FormRow, FormField, BorderForm, DepositFrame } from "./Deposits.styled";
 import { Deposit } from "./deposit.types";
 import ChooseCurrency from "../ChooseCurrency";
 import { changeNumberToPages } from "./deposit.utils";
 import { BlueButton, ButtonGroup, ButtonToggle } from "../SmallComponents/BlueButton.styled";
-import { BorderLabel, BorderForm, BorderWrapper } from "../SmallComponents/BorderComponents.styled";
 
 const Deposits = () => {
 
@@ -49,41 +48,44 @@ const Deposits = () => {
     }
 
     return <DepositsWrapper>
-        <div>
             <BorderForm onSubmit={handleAddDeposit} id="addDepositForm">
-                <BorderLabel dotted>
-                    <p>Amount of sold currency</p>
-                    <input type="number" onChange={e => setSoldSum(e.target.value)} />
-                </BorderLabel>
-                <BorderLabel dotted>
+                Add deposit:
+                <FormRow>
+                <FormField>
                     <p>Sold currency</p>
                     <ChooseCurrency value={soldCurrency} onChangeHandler={handleSoldCurrency} />
-                </BorderLabel>
-                <BorderLabel dotted>
-                    <p>Quote</p>
-                    <input type="number" step="0.0001" onChange={e => setQuote(e.target.value)} />
-                </BorderLabel>
-                <BorderLabel dotted>
+                </FormField>
+                <FormField>
+                    <p>Amount of sold currency</p>
+                    <input type="number" onChange={e => setSoldSum(e.target.value)} />
+                </FormField>
+                </FormRow>
+                <FormRow>
+                <FormField>
                     <p>Bought currency</p>
                     <ChooseCurrency value={boughtCurrency} onChangeHandler={handleBoughtCurrency} />
-                </BorderLabel>
+                </FormField>
+                <FormField>
+                    <p>Quote</p>
+                    <input type="number" step="0.0001" onChange={e => setQuote(e.target.value)} />
+                </FormField>
+                </FormRow>
                 <div>
                     <BlueButton type="submit">Add</BlueButton>
                 </div>
             </BorderForm>
-        </div>
-        <BorderWrapper>
+        <DepositFrame>
             <span>Your deposits ({amountOfDeposits}):</span>
-            <BorderWrapper dotted>
+            <DepositFrame dotted>
                 {deposits
                     ? deposits.map(deposit =>
-                        <BorderWrapper key={'depositNr_' + deposit.id} thin>
+                        <DepositFrame key={'depositNr_' + deposit.id} thin>
                             <DepositLabel>{deposit.soldSum} {deposit.soldCurrency} has been sold for {deposit.boughtSum} {deposit.boughtCurrency} (id={deposit.id}).</DepositLabel>
                             <BlueButton onClick={e => handleRemoveDeposit(e, deposit.id)}>Remove</BlueButton>
-                        </BorderWrapper>
+                        </DepositFrame>
                     )
                     : ""}
-            </BorderWrapper>
+            </DepositFrame>
             <DepositsWrapper>
                 <ButtonGroup>
                     {depositsPages
@@ -95,7 +97,7 @@ const Deposits = () => {
                         : ""}
                 </ButtonGroup>
             </DepositsWrapper>
-        </BorderWrapper>
+        </DepositFrame>
     </DepositsWrapper>
 }
 

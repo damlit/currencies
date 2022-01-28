@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { getLastCurrencies } from "../request/currencies.request";
-import { QuotesWrapper } from './Quotes.styled.js';
+import { QuotesFrame, QuotesLabel, QuotesWrapper } from './Quotes.styled.js';
 import { getDateFromTimestamp } from "./quotes.utils";
 import ChooseCurrency from "../ChooseCurrency";
-import { BorderLabel, BorderWrapper } from "../SmallComponents/BorderComponents.styled";
 
 const Quotes = () => {
 
@@ -19,23 +18,22 @@ const Quotes = () => {
     }
 
     return <QuotesWrapper>
-        <BorderWrapper key={"quotesTab"}>
+        <QuotesFrame key={"quotesTab"}>
             <span>Choose target currency: </span>
             <ChooseCurrency value={targetCurrency} onChangeHandler={handleChangeTargetCurrency} />
-        </BorderWrapper>
-        <div>
-            <BorderWrapper>
-                <BorderLabel dotted>
-                    <span>Date: {lastCurrencies && getDateFromTimestamp(lastCurrencies.quotesDate)}</span></BorderLabel>
-                {lastCurrencies
-                    ? lastCurrencies.quotes.map(quote =>
-                        <div key={quote.id}>
-                            {quote.currency} has quote {quote.quote}
-                        </div>
-                    )
-                    : ""}
-            </BorderWrapper>
-        </div>
+        </QuotesFrame>
+        <QuotesFrame>
+            <QuotesLabel>
+                <span>Date: {lastCurrencies && getDateFromTimestamp(lastCurrencies.quotesDate)}</span>
+            </QuotesLabel>
+            {lastCurrencies
+                ? lastCurrencies.quotes.map(quote =>
+                    <div key={quote.id}>
+                        {quote.currency} has quote {quote.quote}
+                    </div>
+                )
+                : ""}
+        </QuotesFrame>
     </QuotesWrapper>
 }
 

@@ -5,3 +5,17 @@ export const QuotesWrapper = styled.div`
   flex-direction: column;
   align-items: center;
 `;
+
+export const QuotesLabel = styled.label`
+    margin: 5px 15px;  
+    padding: 5px 15px;
+    border-width: medium;
+    border-style: dotted;
+`;
+
+export const QuotesFrame = styled.div`
+    margin: 5px 15px;  
+    padding: 5px 15px;
+    border-width: medium;
+    border-style: solid;
+`;
