@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { getLastCurrencies } from "../request/currencies.request";
-import PropTypes from 'prop-types';
 import { QuotesWrapper } from './Quotes.styled.js';
 import { getDateFromTimestamp } from "./quotes.utils";
 import ChooseCurrency from "../ChooseCurrency";
@@ -39,9 +38,5 @@ const Quotes = () => {
         </div>
     </QuotesWrapper>
 }
-
-Quotes.propTypes = {
-    token: PropTypes.string.isRequired
-};
 
 export default Quotes;

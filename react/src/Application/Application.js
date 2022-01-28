@@ -60,6 +60,5 @@ export default Application;
 
 // todo
 // 4. CSS in EVERYWHERE
-// 6. refreshing token
 // 7. possibilites to choose quotes list date
 // 
