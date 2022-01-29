@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getProfit } from "../request/currencies.request";
-import { ProfitFrame, ProfitLabel, ProfitWrapper } from "./Profit.styles";
+import { Card } from "../SmallComponents/Card.styled";
+import { ProfitLabel } from "./Profit.styles";
 
 const Profit = () => {
     const [userProfit, setUserProfit] = useState({ profit: 0.0 });
@@ -9,13 +10,11 @@ const Profit = () => {
         getProfit(setUserProfit);
     }, []);
 
-    return <ProfitWrapper>
-        <ProfitFrame>
+    return <Card>
             <span>If you will sell all currencies today your profit equals:
                 {<ProfitLabel>{userProfit.profit} PLN</ProfitLabel>}
             </span>
-        </ProfitFrame>
-    </ProfitWrapper>
+    </Card>
 }
 
 export default Profit;

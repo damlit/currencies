@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { getLastCurrencies } from "../request/currencies.request";
-import { QuotesFrame, QuotesLabel, QuotesWrapper } from './Quotes.styled.js';
+import { QuotesLabel, QuotesWrapper } from './Quotes.styled.js';
 import { getDateFromTimestamp } from "./quotes.utils";
 import ChooseCurrency from "../ChooseCurrency";
+import { Card } from "../SmallComponents/Card.styled";
 
 const Quotes = () => {
 
@@ -18,11 +19,11 @@ const Quotes = () => {
     }
 
     return <QuotesWrapper>
-        <QuotesFrame key={"quotesTab"}>
+        <Card key={"quotesTab"} margin={"2rem 2rem 1rem 2rem"}>
             <span>Choose target currency: </span>
             <ChooseCurrency value={targetCurrency} onChangeHandler={handleChangeTargetCurrency} />
-        </QuotesFrame>
-        <QuotesFrame>
+        </Card>
+        <Card margin={"1rem 2rem 2rem 2rem"}>
             <QuotesLabel>
                 <span>Date: {lastCurrencies && getDateFromTimestamp(lastCurrencies.quotesDate)}</span>
             </QuotesLabel>
@@ -33,7 +34,7 @@ const Quotes = () => {
                     </div>
                 )
                 : ""}
-        </QuotesFrame>
+        </Card>
     </QuotesWrapper>
 }
 

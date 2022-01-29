@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { getDeposits, removeDeposit, addDeposit, getAmountOfDeposits } from "../request/currencies.request";
-import { DepositsWrapper, DepositLabel, FormRow, FormField, BorderForm, DepositFrame } from "./Deposits.styled";
+import { DepositsWrapper, DepositLabel, FormRow, FormField, DepositForm, DepositFrame, DepositInput } from "./Deposits.styled";
 import { Deposit } from "./deposit.types";
 import ChooseCurrency from "../ChooseCurrency";
 import { changeNumberToPages } from "./deposit.utils";
 import { BlueButton, ButtonGroup, ButtonToggle } from "../SmallComponents/BlueButton.styled";
+import { Card } from "../SmallComponents/Card.styled";
 
 const Deposits = () => {
 
@@ -48,45 +49,45 @@ const Deposits = () => {
     }
 
     return <DepositsWrapper>
-            <BorderForm onSubmit={handleAddDeposit} id="addDepositForm">
+        <Card>
+            <DepositForm onSubmit={handleAddDeposit} id="addDepositForm">
                 Add deposit:
                 <FormRow>
-                <FormField>
-                    <p>Sold currency</p>
-                    <ChooseCurrency value={soldCurrency} onChangeHandler={handleSoldCurrency} />
-                </FormField>
-                <FormField>
-                    <p>Amount of sold currency</p>
-                    <input type="number" onChange={e => setSoldSum(e.target.value)} />
-                </FormField>
+                    <FormField>
+                        <p>Sold currency</p>
+                        <ChooseCurrency value={soldCurrency} onChangeHandler={handleSoldCurrency} />
+                    </FormField>
+                    <FormField>
+                        <p>Amount of sold currency</p>
+                        <DepositInput type="number" defaultValue={100} onChange={e => setSoldSum(e.target.value)} />
+                    </FormField>
                 </FormRow>
                 <FormRow>
-                <FormField>
-                    <p>Bought currency</p>
-                    <ChooseCurrency value={boughtCurrency} onChangeHandler={handleBoughtCurrency} />
-                </FormField>
-                <FormField>
-                    <p>Quote</p>
-                    <input type="number" step="0.0001" onChange={e => setQuote(e.target.value)} />
-                </FormField>
+                    <FormField>
+                        <p>Bought currency</p>
+                        <ChooseCurrency value={boughtCurrency} onChangeHandler={handleBoughtCurrency} />
+                    </FormField>
+                    <FormField>
+                        <p>Quote</p>
+                        <DepositInput type="number" step="0.0001" defaultValue={1.0} onChange={e => setQuote(e.target.value)} />
+                    </FormField>
                 </FormRow>
                 <div>
                     <BlueButton type="submit">Add</BlueButton>
                 </div>
-            </BorderForm>
-        <DepositFrame>
+            </DepositForm>
+        </Card>
+        <Card>
             <span>Your deposits ({amountOfDeposits}):</span>
-            <DepositFrame dotted>
                 {deposits
                     ? deposits.map(deposit =>
-                        <DepositFrame key={'depositNr_' + deposit.id} thin>
+                        <DepositFrame key={'depositNr_' + deposit.id}>
                             <DepositLabel>{deposit.soldSum} {deposit.soldCurrency} has been sold for {deposit.boughtSum} {deposit.boughtCurrency} (id={deposit.id}).</DepositLabel>
                             <BlueButton onClick={e => handleRemoveDeposit(e, deposit.id)}>Remove</BlueButton>
                         </DepositFrame>
                     )
                     : ""}
-            </DepositFrame>
-            <DepositsWrapper>
+            <div>
                 <ButtonGroup>
                     {depositsPages
                         ? depositsPages.map(pageNumber =>
@@ -96,8 +97,8 @@ const Deposits = () => {
                         )
                         : ""}
                 </ButtonGroup>
-            </DepositsWrapper>
-        </DepositFrame>
+            </div>
+        </Card>
     </DepositsWrapper>
 }
 

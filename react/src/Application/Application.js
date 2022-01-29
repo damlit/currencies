@@ -59,6 +59,5 @@ const Application = () => {
 export default Application;
 
 // todo
-// 4. CSS in EVERYWHERE
 // 7. possibilites to choose quotes list date
-// 
+// 14. translates

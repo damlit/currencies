@@ -13,7 +13,13 @@ export const DepositLabel = styled.label`
   padding: 5px 15px;
 `;
 
-export const BorderForm = styled.form`
+export const DepositInput = styled.input`
+  width: 90%;
+  margin: 5px 15px;  
+  padding: 5px 15px;
+`;
+
+export const DepositForm = styled.form`
   width: 100%;
   display: flex;
   align-items: center;
@@ -21,12 +27,9 @@ export const BorderForm = styled.form`
   justify-content: space-evenly;
   margin: 5px 15px;  
   padding: 5px 15px;
-  border-width: medium;
-  border-style: solid;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {    
     flex-direction: column;
-    background-color: pink;
   }
 `;
 
@@ -39,7 +42,6 @@ export const FormRow = styled.div`
 
   @media (max-width: ${({ theme }) => theme.mobile}) {    
     flex-direction: column;
-    background-color: gray;
   }
 `;
 
@@ -49,11 +51,21 @@ export const FormField = styled.label`
   padding: 5px 15px;
   border-width: medium;
   border-style: dotted;
+
+  @media (max-width: ${({ theme }) => theme.mobile}) {    
+    width: 90%;
+  }
 `;
 
 export const DepositFrame = styled.div`
-    margin: 5px 15px;  
-    padding: 5px 15px;
-    border-width: ${props => props.thin ? 'thin' : 'medium'};
-    border-style: ${props => props.dotted ? 'dotted' : 'solid'};
+  display: flex;
+  flex-direction: row;
+  margin: 5px 15px;  
+  padding: 5px 15px;
+  border-width: thin;
+  border-style: solid;
+
+  @media (max-width: ${({ theme }) => theme.mobile}) {    
+    flex-direction: column;
+  }
 `;
