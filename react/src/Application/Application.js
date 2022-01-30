@@ -28,7 +28,7 @@ const Application = () => {
     }, [token, dispatch]);
 
     if (!token) {
-        return <Login setToken={setToken}/>;
+        return <Login setToken={setToken} />;
     }
 
     return (
@@ -42,13 +42,13 @@ const Application = () => {
             <BrowserRouter>
                 <Switch>
                     <Route path="/deposits">
-                        <Deposits/>
+                        <Deposits />
                     </Route>
                     <Route path="/profit">
-                        <Profit/>
+                        <Profit />
                     </Route>
                     <Route path="/quotes">
-                        <Quotes/>
+                        <Quotes />
                     </Route>
                 </Switch>
             </BrowserRouter>
@@ -60,4 +60,5 @@ export default Application;
 
 // todo
 // 7. possibilites to choose quotes list date
-// 14. translates
+// 14. translations
+// 15. fields validations

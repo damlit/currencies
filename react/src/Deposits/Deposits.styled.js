@@ -58,6 +58,7 @@ export const FormField = styled.label`
 `;
 
 export const DepositFrame = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: row;
   margin: 5px 15px;  
