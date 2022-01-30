@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { getAuthToken, getRegistrationToken, sendConfirmationToken } from '../request/login.request';
 import { LoginWrapper } from './Login.styled.js';
 import { BlueButton, ButtonToggle, ButtonGroup } from "../SmallComponents/BlueButton.styled";
+import { makeFunctionIfFieldsHasBeenFilled } from '../utils/validationFunctions.utils';
 
 const Login = ({ setToken }) => {
 
@@ -11,7 +12,15 @@ const Login = ({ setToken }) => {
   const [signUp, setSignUp] = useState(false);
   const [signUpToken, setSignUpToken] = useState('');
 
-  const handleSubmit = async e => {
+  const handleSubmitTest = async e => {
+    if (signUp) {
+      makeFunctionIfFieldsHasBeenFilled(submitSignUp, e, [email, password]);
+    } else {
+      makeFunctionIfFieldsHasBeenFilled(submitLogIn, e, [email, password]);
+    }
+  }
+
+  const submitLogIn = async e => {
     e.preventDefault();
     const { status, token } = await getAuthToken(email, password);
 
@@ -23,7 +32,7 @@ const Login = ({ setToken }) => {
     }
   }
 
-  const handleSubmitSignUp = async e => {
+  const submitSignUp = async e => {
     e.preventDefault();
     const { status, confirmationToken } = await getRegistrationToken(email, password);
 
@@ -35,6 +44,10 @@ const Login = ({ setToken }) => {
   }
 
   const handleConfirmationToken = async e => {
+    makeFunctionIfFieldsHasBeenFilled(confirmSignUpToken, e, [signUpToken]);
+  }
+
+  const confirmSignUpToken = async e => {
     e.preventDefault();
     const { status, textResponse } = await sendConfirmationToken(signUpToken);
 
@@ -44,6 +57,7 @@ const Login = ({ setToken }) => {
       document.getElementById("confirmationForm").reset();
       setSignUp(false);
     }
+
   }
 
   return (
@@ -60,7 +74,7 @@ const Login = ({ setToken }) => {
         ? <h1>Please Sign Up</h1>
         : <h1>Please Log In</h1>
       }
-      <form onSubmit={signUp ? handleSubmitSignUp : handleSubmit} id="userForm">
+      <form onSubmit={handleSubmitTest} id="userForm">
         <label>
           <p>Email</p>
           <input type="text" onChange={e => setEmail(e.target.value)} />

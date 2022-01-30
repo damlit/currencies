@@ -6,6 +6,7 @@ import ChooseCurrency from "../ChooseCurrency";
 import { changeNumberToPages } from "./deposit.utils";
 import { BlueButton, ButtonGroup, ButtonToggle } from "../SmallComponents/BlueButton.styled";
 import { Card } from "../SmallComponents/Card.styled";
+import { makeFunctionIfFieldsHasBeenFilled } from "../utils/validationFunctions.utils";
 
 const Deposits = () => {
 
@@ -14,9 +15,9 @@ const Deposits = () => {
     const [depositsPages, setDepositsPages] = useState([]);
     const [amountOfDeposits, setAmountOfDeposits] = useState([]);
 
-    const [soldSum, setSoldSum] = useState(0.0);
+    const [soldSum, setSoldSum] = useState(100);
     const [soldCurrency, setSoldCurrency] = useState('PLN');
-    const [quote, setQuote] = useState(0.0);
+    const [quote, setQuote] = useState(1.0);
     const [boughtCurrency, setBoughtCurrency] = useState('EUR');
 
     useEffect(() => {
@@ -30,7 +31,12 @@ const Deposits = () => {
         getDeposits(setDeposits, currentDepositsPage);
     }
 
+
     const handleAddDeposit = async (e) => {
+        makeFunctionIfFieldsHasBeenFilled(addNewDeposit, e, [soldCurrency, boughtCurrency]);
+    }
+
+    const addNewDeposit = async (e) => {
         const deposit = new Deposit(soldCurrency, boughtCurrency, Number(quote), Number(soldSum));
         await addDeposit(deposit);
         getDeposits(setDeposits, currentDepositsPage);
@@ -79,14 +85,14 @@ const Deposits = () => {
         </Card>
         <Card>
             <span>Your deposits ({amountOfDeposits}):</span>
-                {deposits
-                    ? deposits.map(deposit =>
-                        <DepositFrame key={'depositNr_' + deposit.id}>
-                            <DepositLabel>{deposit.soldSum} {deposit.soldCurrency} has been sold for {deposit.boughtSum} {deposit.boughtCurrency} (id={deposit.id}).</DepositLabel>
-                            <BlueButton onClick={e => handleRemoveDeposit(e, deposit.id)}>Remove</BlueButton>
-                        </DepositFrame>
-                    )
-                    : ""}
+            {deposits
+                ? deposits.map(deposit =>
+                    <DepositFrame key={'depositNr_' + deposit.id}>
+                        <DepositLabel>{deposit.soldSum} {deposit.soldCurrency} has been sold for {deposit.boughtSum} {deposit.boughtCurrency} (id={deposit.id}).</DepositLabel>
+                        <BlueButton onClick={e => handleRemoveDeposit(e, deposit.id)}>Remove</BlueButton>
+                    </DepositFrame>
+                )
+                : ""}
             <div>
                 <ButtonGroup>
                     {depositsPages
