@@ -4,13 +4,16 @@ import { getAuthToken, getRegistrationToken, sendConfirmationToken } from '../re
 import { LoginWrapper } from './Login.styled.js';
 import { BlueButton, ButtonToggle, ButtonGroup } from "../SmallComponents/BlueButton.styled";
 import { makeFunctionIfFieldsHasBeenFilled } from '../utils/validationFunctions.utils';
+import { useTranslation } from "react-i18next";
 
 const Login = ({ setToken }) => {
 
+  const { t, i18n } = useTranslation('common');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [signUp, setSignUp] = useState(false);
   const [signUpToken, setSignUpToken] = useState('');
+  const [language, setLanguage] = useState('en');
 
   const handleSubmitTest = async e => {
     if (signUp) {
@@ -60,41 +63,56 @@ const Login = ({ setToken }) => {
 
   }
 
+  const handleChangeLanguage = (e) => {
+    e.preventDefault();
+    setLanguage(e.target.value);
+    i18n.changeLanguage(e.target.value);
+  }
+
   return (
     <LoginWrapper>
+      {t('login.changeLng')}
       <ButtonGroup>
-        <ButtonToggle active={!signUp} onClick={() => setSignUp(false)}>
-          login
+        <ButtonToggle value='en' active={language === 'en'} onClick={(e) => handleChangeLanguage(e)}>
+          EN
         </ButtonToggle>
-        <ButtonToggle active={signUp} onClick={() => setSignUp(true)}>
-          sign up
+        <ButtonToggle value='pl' active={language === 'pl'} onClick={(e) => handleChangeLanguage(e)}>
+          PL
         </ButtonToggle>
       </ButtonGroup>
       {signUp
-        ? <h1>Please Sign Up</h1>
-        : <h1>Please Log In</h1>
+        ? <h1>{t('login.signUp')}</h1>
+        : <h1>{t('login.login')}</h1>
       }
+      <ButtonGroup>
+        <ButtonToggle active={!signUp} onClick={() => setSignUp(false)}>
+          {t('login.login')}
+        </ButtonToggle>
+        <ButtonToggle active={signUp} onClick={() => setSignUp(true)}>
+          {t('login.signUp')}
+        </ButtonToggle>
+      </ButtonGroup>
       <form onSubmit={handleSubmitTest} id="userForm">
         <label>
-          <p>Email</p>
+          <p>{t('login.email')}</p>
           <input type="text" onChange={e => setEmail(e.target.value)} />
         </label>
         <label>
-          <p>Password</p>
+          <p>{t('login.password')}</p>
           <input type="password" onChange={e => setPassword(e.target.value)} />
         </label>
         <div>
-          <BlueButton type="submit">Submit</BlueButton>
+          <BlueButton type="submit">{t('login.submit')}</BlueButton>
         </div>
       </form>
       {signUp &&
         <form onSubmit={handleConfirmationToken} id="confirmationForm">
           <label>
-            <p>Confirmation token</p>
+            <p>{t('login.confirmationToken')}</p>
             <input type="text" onChange={e => setSignUpToken(e.target.value)} />
           </label>
           <div>
-            <BlueButton type="confirm">Confirm</BlueButton>
+            <BlueButton type="confirm">{t('login.confirm')}</BlueButton>
           </div>
         </form>
       }

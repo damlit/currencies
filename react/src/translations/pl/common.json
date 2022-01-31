@@ -1,0 +1,38 @@
+{
+    "login": {
+        "changeLng": "Zmień język",
+        "login": "Zaloguj",
+        "signUp": "Zarejestruj",
+        "email": "email",
+        "password": "hasło",
+        "confirmationToken": "kod potwierdzający",
+        "confirm": "potwierdź",
+        "submit": "wyślij"
+    },
+    "menu": {
+        "deposits": "depozyty",
+        "profit": "zysk",
+        "quotes": "kursy",
+        "logout": "wyloguj",
+        "update": "aktualizuj"
+    },
+    "quotes": {
+        "chooseTarget": "Wybierz docelową walutę",
+        "date": "data",
+        "hadQuote": "miał kurs"
+    },
+    "profit": {
+        "profitMsg": "Jeśli sprzedałbyś wszystkie waluty dziś, twój zysk wyniósłby"
+    },
+    "deposits": {
+        "addDeposit": "Dodaj depozyt",
+        "soldCurr": "Sprzedana waluta",
+        "boughtCurr": "Kupiona waluta",
+        "amountOfSoldCurr": "Ilość sprzedanej waluty",
+        "quote": "Kurs",
+        "add": "dodaj",
+        "yourDeposits": "Twoje depozyty",
+        "hasBeenSold": "zostało sprzedane za",
+        "remove": "usuń"
+    }
+}

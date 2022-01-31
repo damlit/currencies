@@ -1,0 +1,38 @@
+{
+    "login": {
+        "changeLng": "Change language",
+        "login": "Login",
+        "signUp": "Sign up",
+        "email": "email",
+        "password": "password",
+        "confirmationToken": "confirmation token",
+        "confirm": "confirm",
+        "submit": "submit"
+    },
+    "menu": {
+        "deposits": "deposits",
+        "profit": "profit",
+        "quotes": "quotes",
+        "logout": "logout",
+        "update": "update"
+    },
+    "quotes": {
+        "chooseTarget": "Choose target currency",
+        "date": "date",
+        "hadQuote": "had quote"
+    },
+    "profit": {
+        "profitMsg": "If you will sell all currencies today your profit equals"
+    },
+    "deposits": {
+        "addDeposit": "Add deposit",
+        "soldCurr": "Sold currency",
+        "boughtCurr": "Bought currency",
+        "amountOfSoldCurr": "Amount of sold currency",
+        "quote": "Quote",
+        "add": "add",
+        "yourDeposits": "Your deposits",
+        "hasBeenSold": "has been sold for",
+        "remove": "remove"
+    }
+}

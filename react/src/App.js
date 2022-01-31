@@ -4,20 +4,42 @@ import store from './redux/store';
 
 import { ThemeProvider } from 'styled-components';
 import { theme } from './theme.styles';
-import { GlobalBody, GlobalStyles, Logo, LogoText } from './global.styled';
+import { GlobalBody, GlobalStyles, Logo, LogoCointainer, LogoText } from './global.styled';
 import Application from './Application';
 
+import { I18nextProvider } from "react-i18next";
+import i18next from "i18next";
+import common_en from './translations/en/common.json';
+import common_pl from './translations/pl/common.json';
+
 const App = () => {
+
+  i18next.init({
+    interpolation: { escapeValue: false },
+    react: {
+      useSuspense: false,
+      wait: true,
+    },
+    fallbackLng: ['en', 'pl'],
+    resources: {
+      en: { common: common_en },
+      pl: { common: common_pl }
+    }
+  });
 
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <GlobalStyles />
         <Logo>
-          <LogoText>Currency</LogoText>
+          <LogoCointainer>
+            <LogoText>Currency</LogoText>
+          </LogoCointainer>
         </Logo>
         <GlobalBody>
-          <Application />
+          <I18nextProvider i18n={i18next}>
+            <Application />
+          </I18nextProvider>
         </GlobalBody>
       </Provider>
     </ThemeProvider>

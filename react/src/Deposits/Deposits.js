@@ -7,8 +7,10 @@ import { changeNumberToPages } from "./deposit.utils";
 import { BlueButton, ButtonGroup, ButtonToggle } from "../SmallComponents/BlueButton.styled";
 import { Card } from "../SmallComponents/Card.styled";
 import { makeFunctionIfFieldsHasBeenFilled } from "../utils/validationFunctions.utils";
+import { useTranslation } from "react-i18next";
 
 const Deposits = () => {
+    const { t } = useTranslation('common');
 
     const [deposits, setDeposits] = useState([]);
     const [currentDepositsPage, setCurrentDepositsPage] = useState(0);
@@ -57,39 +59,39 @@ const Deposits = () => {
     return <DepositsWrapper>
         <Card>
             <DepositForm onSubmit={handleAddDeposit} id="addDepositForm">
-                Add deposit:
+                {t('deposits.addDeposit')}:
                 <FormRow>
                     <FormField>
-                        <p>Sold currency</p>
+                        <p>{t('deposits.soldCurr')}</p>
                         <ChooseCurrency value={soldCurrency} onChangeHandler={handleSoldCurrency} />
                     </FormField>
                     <FormField>
-                        <p>Amount of sold currency</p>
+                        <p>{t('deposits.amountOfSoldCurr')}</p>
                         <DepositInput type="number" defaultValue={100} onChange={e => setSoldSum(e.target.value)} />
                     </FormField>
                 </FormRow>
                 <FormRow>
                     <FormField>
-                        <p>Bought currency</p>
+                        <p>{t('deposits.boughtCurr')}</p>
                         <ChooseCurrency value={boughtCurrency} onChangeHandler={handleBoughtCurrency} />
                     </FormField>
                     <FormField>
-                        <p>Quote</p>
+                        <p>{t('deposits.quote')}</p>
                         <DepositInput type="number" step="0.0001" defaultValue={1.0} onChange={e => setQuote(e.target.value)} />
                     </FormField>
                 </FormRow>
                 <div>
-                    <BlueButton type="submit">Add</BlueButton>
+                    <BlueButton type="submit">{t('deposits.add')}</BlueButton>
                 </div>
             </DepositForm>
         </Card>
         <Card>
-            <span>Your deposits ({amountOfDeposits}):</span>
+            <span>{t('deposits.yourDeposits')} ({amountOfDeposits}):</span>
             {deposits
                 ? deposits.map(deposit =>
                     <DepositFrame key={'depositNr_' + deposit.id}>
-                        <DepositLabel>{deposit.soldSum} {deposit.soldCurrency} has been sold for {deposit.boughtSum} {deposit.boughtCurrency} (id={deposit.id}).</DepositLabel>
-                        <BlueButton onClick={e => handleRemoveDeposit(e, deposit.id)}>Remove</BlueButton>
+                        <DepositLabel>{deposit.soldSum} {deposit.soldCurrency} {t('deposits.hasBeenSold')} {deposit.boughtSum} {deposit.boughtCurrency} (id={deposit.id}).</DepositLabel>
+                        <BlueButton onClick={e => handleRemoveDeposit(e, deposit.id)}>{t('deposits.remove')}</BlueButton>
                     </DepositFrame>
                 )
                 : ""}

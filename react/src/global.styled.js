@@ -25,6 +25,7 @@ export const GlobalBody = styled.div`
 `
 
 export const Logo = styled.div`
+  display: flex;
   background: ${({ theme }) => theme.primaryCard};
   color: ${({ theme }) => theme.primaryLight};
   height: 4rem;
@@ -32,7 +33,15 @@ export const Logo = styled.div`
   font-family: -apple-system, BlinkMacSystemFont, Papyrus, fantasy; 
 `
 
+export const LogoCointainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const LogoText = styled.h1`
+  display: flex;
   padding: 1rem;
   font-size: 2rem;
   font-weight: 600;
