@@ -99,7 +99,7 @@ const Deposits = () => {
                 <ButtonGroup>
                     {depositsPages
                         ? depositsPages.map(pageNumber =>
-                            <ButtonToggle onClick={e => handleChangePageNumber(e, pageNumber)} active={pageNumber === currentDepositsPage + 1}>
+                            <ButtonToggle key={'depositPage_' + pageNumber} onClick={e => handleChangePageNumber(e, pageNumber)} active={pageNumber === currentDepositsPage + 1}>
                                 {pageNumber}
                             </ButtonToggle>
                         )

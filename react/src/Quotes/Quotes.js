@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 
 const Quotes = () => {
     const { t } = useTranslation('common');
+
     const [targetCurrency, setTargetCurrency] = useState('PLN');
     const [lastCurrencies, setLastCurrencies] = useState();
 

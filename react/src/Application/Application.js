@@ -32,14 +32,14 @@ const Application = () => {
     }
 
     return (
-        <div>
+        <BrowserRouter>
             <div ref={node}>
                 <FocusLock disabled={!open}>
                     <Burger open={open} setOpen={setOpen} aria-controls={menuId} />
                     <Menu open={open} setOpen={setOpen} id={menuId} logout={cleanToken} />
                 </FocusLock>
             </div>
-            <BrowserRouter>
+            <div>
                 <Switch>
                     <Route path="/deposits">
                         <Deposits />
@@ -51,8 +51,8 @@ const Application = () => {
                         <Quotes />
                     </Route>
                 </Switch>
-            </BrowserRouter>
-        </div>
+            </div>
+        </BrowserRouter>
     );
 }
 
@@ -60,5 +60,4 @@ export default Application;
 
 // todo
 // 7. possibilites to choose quotes list date
-// 14. bug with translations (not remember)
 // 15. css on login page

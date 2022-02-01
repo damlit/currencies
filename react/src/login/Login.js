@@ -7,8 +7,8 @@ import { makeFunctionIfFieldsHasBeenFilled } from '../utils/validationFunctions.
 import { useTranslation } from "react-i18next";
 
 const Login = ({ setToken }) => {
-
   const { t, i18n } = useTranslation('common');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [signUp, setSignUp] = useState(false);
@@ -60,10 +60,9 @@ const Login = ({ setToken }) => {
       document.getElementById("confirmationForm").reset();
       setSignUp(false);
     }
-
   }
 
-  const handleChangeLanguage = (e) => {
+  const handleChangeLanguage = async (e) => {
     e.preventDefault();
     setLanguage(e.target.value);
     i18n.changeLanguage(e.target.value);

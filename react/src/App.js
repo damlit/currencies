@@ -28,21 +28,21 @@ const App = () => {
   });
 
   return (
-    <ThemeProvider theme={theme}>
-      <Provider store={store}>
-        <GlobalStyles />
-        <Logo>
-          <LogoCointainer>
-            <LogoText>Currency</LogoText>
-          </LogoCointainer>
-        </Logo>
-        <GlobalBody>
-          <I18nextProvider i18n={i18next}>
+    <I18nextProvider i18n={i18next}>
+      <ThemeProvider theme={theme}>
+        <Provider store={store}>
+          <GlobalStyles />
+          <Logo>
+            <LogoCointainer>
+              <LogoText>Currency</LogoText>
+            </LogoCointainer>
+          </Logo>
+          <GlobalBody>
             <Application />
-          </I18nextProvider>
-        </GlobalBody>
-      </Provider>
-    </ThemeProvider>
+          </GlobalBody>
+        </Provider>
+      </ThemeProvider>
+    </I18nextProvider>
   );
 }
 

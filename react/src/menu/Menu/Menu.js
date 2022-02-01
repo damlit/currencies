@@ -4,6 +4,7 @@ import { StyledMenu } from './Menu.styled';
 import { updateCurrencies } from '../../request/currencies.request';
 import { useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
+import { Link } from 'react-router-dom';
 
 const Menu = ({ open, logout }) => {
   const { t } = useTranslation('common');
@@ -16,27 +17,27 @@ const Menu = ({ open, logout }) => {
 
   return (
     <StyledMenu open={open} aria-hidden={!isHidden}>
-      <a href="/deposits" tabIndex={tabIndex}>
+      <Link to="/deposits" tabIndex={tabIndex}>
         <span aria-hidden="true">💁🏻‍♂️</span>
         {t('menu.deposits')}
-      </a>
-      <a href="/profit" tabIndex={tabIndex}>
+      </Link>
+      <Link to="/profit" tabIndex={tabIndex}>
         <span aria-hidden="true">💸</span>
         {t('menu.profit')}
-      </a>
-      <a href="/quotes" tabIndex={tabIndex}>
+      </Link>
+      <Link to="/quotes" tabIndex={tabIndex}>
         <span aria-hidden="true">📈</span>
         {t('menu.quotes')}
-      </a>
+      </Link>
       <a href="/" tabIndex={tabIndex} onClick={() => logout()}>
         <span aria-hidden="true">👋</span>
         {t('menu.logout')}
       </a>
       {isAdmin() &&
-        <a href="/" tabIndex={tabIndex} onClick={() => updateCurrencies()} role='button'>
+        <Link to="/quotes" tabIndex={tabIndex} onClick={async () => await updateCurrencies()} role='button'>
           <span aria-hidden="true">🔂</span>
-        {t('menu.update')}
-        </a>}
+          {t('menu.update')}
+        </Link>}
     </StyledMenu>
   )
 }
