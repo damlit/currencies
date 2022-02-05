@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { getAuthToken, getRegistrationToken, sendConfirmationToken } from '../request/login.request';
-import { LoginWrapper } from './Login.styled.js';
+import { LoginText, LoginWrapper } from './Login.styled.js';
 import { BlueButton, ButtonToggle, ButtonGroup } from "../SmallComponents/BlueButton.styled";
 import { makeFunctionIfFieldsHasBeenFilled } from '../utils/validationFunctions.utils';
 import { useTranslation } from "react-i18next";
+import { Card } from '../SmallComponents/Card.styled';
 
 const Login = ({ setToken }) => {
   const { t, i18n } = useTranslation('common');
@@ -70,51 +71,55 @@ const Login = ({ setToken }) => {
 
   return (
     <LoginWrapper>
-      {t('login.changeLng')}
-      <ButtonGroup>
-        <ButtonToggle value='en' active={language === 'en'} onClick={(e) => handleChangeLanguage(e)}>
-          EN
-        </ButtonToggle>
-        <ButtonToggle value='pl' active={language === 'pl'} onClick={(e) => handleChangeLanguage(e)}>
-          PL
-        </ButtonToggle>
-      </ButtonGroup>
-      {signUp
-        ? <h1>{t('login.signUp')}</h1>
-        : <h1>{t('login.login')}</h1>
-      }
-      <ButtonGroup>
-        <ButtonToggle active={!signUp} onClick={() => setSignUp(false)}>
-          {t('login.login')}
-        </ButtonToggle>
-        <ButtonToggle active={signUp} onClick={() => setSignUp(true)}>
-          {t('login.signUp')}
-        </ButtonToggle>
-      </ButtonGroup>
-      <form onSubmit={handleSubmitTest} id="userForm">
-        <label>
-          <p>{t('login.email')}</p>
-          <input type="text" onChange={e => setEmail(e.target.value)} />
-        </label>
-        <label>
-          <p>{t('login.password')}</p>
-          <input type="password" onChange={e => setPassword(e.target.value)} />
-        </label>
-        <div>
-          <BlueButton type="submit">{t('login.submit')}</BlueButton>
-        </div>
-      </form>
-      {signUp &&
-        <form onSubmit={handleConfirmationToken} id="confirmationForm">
+      <Card>
+        {t('login.changeLng')}
+        <ButtonGroup>
+          <ButtonToggle value='en' active={language === 'en'} onClick={(e) => handleChangeLanguage(e)}>
+            EN
+          </ButtonToggle>
+          <ButtonToggle value='pl' active={language === 'pl'} onClick={(e) => handleChangeLanguage(e)}>
+            PL
+          </ButtonToggle>
+        </ButtonGroup>
+      </Card>
+      <Card>
+        {signUp
+          ? <h1>{t('login.signUp')}</h1>
+          : <h1>{t('login.login')}</h1>
+        }
+        <ButtonGroup>
+          <ButtonToggle active={!signUp} onClick={() => setSignUp(false)}>
+            {t('login.login')}
+          </ButtonToggle>
+          <ButtonToggle active={signUp} onClick={() => setSignUp(true)}>
+            {t('login.signUp')}
+          </ButtonToggle>
+        </ButtonGroup>
+        <form onSubmit={handleSubmitTest} id="userForm">
           <label>
-            <p>{t('login.confirmationToken')}</p>
-            <input type="text" onChange={e => setSignUpToken(e.target.value)} />
+            <LoginText>{t('login.email')}</LoginText>
+            <input type="text" onChange={e => setEmail(e.target.value)} />
+          </label>
+          <label>
+            <LoginText>{t('login.password')}</LoginText>
+            <input type="password" onChange={e => setPassword(e.target.value)} />
           </label>
           <div>
-            <BlueButton type="confirm">{t('login.confirm')}</BlueButton>
+            <BlueButton type="submit">{t('login.submit')}</BlueButton>
           </div>
         </form>
-      }
+        {signUp &&
+          <form onSubmit={handleConfirmationToken} id="confirmationForm">
+            <label>
+              <LoginText>{t('login.confirmationToken')}</LoginText>
+              <input type="text" onChange={e => setSignUpToken(e.target.value)} />
+            </label>
+            <div>
+              <BlueButton type="confirm">{t('login.confirm')}</BlueButton>
+            </div>
+          </form>
+        }
+      </Card >
     </LoginWrapper>
   )
 }

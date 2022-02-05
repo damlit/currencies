@@ -60,4 +60,3 @@ export default Application;
 
 // todo
 // 7. possibilites to choose quotes list date
-// 15. css on login page
