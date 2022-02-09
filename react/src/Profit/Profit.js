@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 const Profit = () => {
     const { t } = useTranslation('common');
 
-    const [userProfit, setUserProfit] = useState({ profit: 0.0 });
+    const [userProfit, setUserProfit] = useState({ profit: 0.0, depositsProfits: [] });
 
     useEffect(() => {
         getProfit(setUserProfit);

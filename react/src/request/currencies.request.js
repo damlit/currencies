@@ -18,6 +18,7 @@ export const getProfit = async (setState) => {
     const status = await response.status;
     if (status === 200) {
         const jsonResponse = await response.json();
+        console.log(jsonResponse);
         setState(jsonResponse);
     } else {
         const textResponse = await response.text();

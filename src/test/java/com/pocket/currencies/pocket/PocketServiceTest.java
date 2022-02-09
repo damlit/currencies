@@ -1,10 +1,12 @@
 package com.pocket.currencies.pocket;
 
 import com.pocket.currencies.currencies.entity.Currency;
+import com.pocket.currencies.mock.MockUtils;
 import com.pocket.currencies.pocket.calculator.ProfitCalculator;
 import com.pocket.currencies.pocket.entity.Deposit;
 import com.pocket.currencies.pocket.entity.DepositDto;
 import com.pocket.currencies.pocket.entity.Pocket;
+import com.pocket.currencies.pocket.entity.ProfitDto;
 import com.pocket.currencies.pocket.repository.DepositRepository;
 import com.pocket.currencies.pocket.repository.PocketRepository;
 import com.pocket.currencies.users.UserService;
@@ -22,6 +24,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,7 +56,7 @@ public class PocketServiceTest {
     public void shouldAddDeposit() {
         String expectedMessage = "Success deposit with id 0";
         DepositDto depositDto = new DepositDto(Currency.PLN, Currency.EUR, BigDecimal.TEN, BigDecimal.ONE);
-        User user = getMockedUser();
+        User user = MockUtils.getMockedUser();
         Pocket pocket = new Pocket(1, user, new ArrayList<>());
         user.setPocket(pocket);
         when(userService.getActiveUser()).thenReturn(user);
@@ -84,18 +87,32 @@ public class PocketServiceTest {
     @Test
     @WithMockUser
     public void shouldReturnProfit() {
-        String expectedMessage = "{\"profit\":1000.21}";
-        User user = getMockedUser();
+        String expectedMessage = "{\"profit\":10.21," +
+                "\"depositsProfits\":[{\"depositId\":10,\"profit\":10.21,\"soldSum\":10,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\"}]}";
+        User user = MockUtils.getMockedUser();
         Pocket pocket = new Pocket(1, user, new ArrayList<>());
+        List<Deposit> deposits = new ArrayList<>(
+                Collections.singletonList(new Deposit(3, Currency.PLN, Currency.EUR, BigDecimal.TEN, BigDecimal.valueOf(10), BigDecimal.valueOf(1), pocket))
+        );
+        pocket.setDeposits(deposits);
         user.setPocket(pocket);
         when(userService.getActiveUser()).thenReturn(user);
         when(pocketRepository.getById(1L)).thenReturn(pocket);
-        when(profitCalculator.calculateProfit(pocket)).thenReturn(BigDecimal.valueOf(1000.21));
+        when(profitCalculator.calculateProfit(pocket)).thenReturn(getMockedProfitDto());
 
         String message = pocketService.calculateProfit();
 
         verify(profitCalculator, times(1)).calculateProfit(pocket);
         assertEquals(expectedMessage, message);
+    }
+
+    private ProfitDto getMockedProfitDto() {
+        return ProfitDto.builder()
+                .profit(BigDecimal.valueOf(10.21))
+                .depositsProfits(
+                        Collections.singletonList(MockUtils.createMockProfit(Currency.EUR, Currency.PLN, 10.21))
+                )
+                .build();
     }
 
     @Test
@@ -106,7 +123,7 @@ public class PocketServiceTest {
                 + "{\"id\":2,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\",\"quote\":10.0,\"soldSum\":1,\"boughtSum\":10},"
                 + "{\"id\":3,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\",\"quote\":10.0,\"soldSum\":1,\"boughtSum\":10}"
                 + "]";
-        User user = getMockedUser();
+        User user = MockUtils.getMockedUser();
         Pocket pocket = new Pocket(1, user, new ArrayList<>());
         Deposit deposit1 = new Deposit(1, Currency.PLN, Currency.EUR, BigDecimal.valueOf(10.0), BigDecimal.ONE, BigDecimal.TEN, pocket);
         Deposit deposit2 = new Deposit(2, Currency.PLN, Currency.EUR, BigDecimal.valueOf(10.0), BigDecimal.ONE, BigDecimal.TEN, pocket);
@@ -122,11 +139,5 @@ public class PocketServiceTest {
 
         verify(depositRepository, times(1)).getAllByPocket(pocket, PageRequest.of(0, 3));
         assertEquals(expectedMessage, message);
-    }
-
-    private User getMockedUser() {
-        return User.builder()
-                .email("test@test.pl")
-                .build();
     }
 }

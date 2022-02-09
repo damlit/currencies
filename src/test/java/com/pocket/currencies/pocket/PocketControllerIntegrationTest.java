@@ -5,6 +5,7 @@ import com.pocket.currencies.currencies.entity.ExchangeQuote;
 import com.pocket.currencies.currencies.entity.Quote;
 import com.pocket.currencies.currencies.repository.ExchangeQuoteRepository;
 import com.pocket.currencies.currencies.repository.QuoteRepository;
+import com.pocket.currencies.mock.MockUtils;
 import com.pocket.currencies.pocket.entity.Deposit;
 import com.pocket.currencies.pocket.entity.Pocket;
 import com.pocket.currencies.pocket.repository.DepositRepository;
@@ -110,12 +111,14 @@ public class PocketControllerIntegrationTest {
     @Test
     @WithMockUser(username = "test@test.pl")
     public void testCalculateProfit() throws Exception {
-        String expectedResponse = "{\"profit\":-12.65}";
+        String expectedResponse = "{\"profit\":-12.65,\"depositsProfits\":[" +
+                "{\"depositId\":2,\"profit\":-9.65,\"soldSum\":10.00,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\"}," +
+                "{\"depositId\":3,\"profit\":-3.00,\"soldSum\":10.00,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"USD\"}]}";
         Pocket pocket = new Pocket();
         pocketRepository.save(pocket);
-        Deposit deposit = createMockDeposit(Currency.EUR, BigDecimal.TEN, pocket);
+        Deposit deposit = MockUtils.createMockDeposit(Currency.EUR, BigDecimal.TEN, pocket);
         depositRepository.save(deposit);
-        Deposit deposit1 = createMockDeposit(Currency.USD, BigDecimal.TEN, pocket);
+        Deposit deposit1 = MockUtils.createMockDeposit(Currency.USD, BigDecimal.TEN, pocket);
         depositRepository.save(deposit1);
         User user = User.builder().email("test@test.pl").pocket(pocket).build();
         userRepository.save(user);
@@ -172,16 +175,5 @@ public class PocketControllerIntegrationTest {
                 .accept(MediaType.ALL))
                 .andExpect(status().isOk())
                 .andExpect(content().string(expectedResponse2));
-    }
-
-    private Deposit createMockDeposit(Currency boughtCurrency, BigDecimal quote, Pocket pocket) {
-        return Deposit.builder()
-                .soldCurrency(Currency.PLN)
-                .boughtCurrency(boughtCurrency)
-                .quote(quote)
-                .pocket(pocket)
-                .soldSum(BigDecimal.TEN)
-                .boughtSum(BigDecimal.TEN.divide(quote, RoundingMode.HALF_DOWN))
-                .build();
     }
 }

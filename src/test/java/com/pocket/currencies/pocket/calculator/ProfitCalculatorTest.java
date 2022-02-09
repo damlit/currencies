@@ -4,8 +4,11 @@ import com.pocket.currencies.currencies.entity.Currency;
 import com.pocket.currencies.currencies.entity.ExchangeQuote;
 import com.pocket.currencies.currencies.entity.Quote;
 import com.pocket.currencies.currencies.repository.ExchangeQuoteRepository;
+import com.pocket.currencies.mock.MockUtils;
 import com.pocket.currencies.pocket.entity.Deposit;
 import com.pocket.currencies.pocket.entity.Pocket;
+import com.pocket.currencies.pocket.entity.Profit;
+import com.pocket.currencies.pocket.entity.ProfitDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +22,7 @@ import java.math.RoundingMode;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -27,83 +31,51 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class ProfitCalculatorTest {
 
+    private final BigDecimal PLN_QUOTE = BigDecimal.valueOf(4.08);
+
     ProfitCalculator profitCalculator;
     @Mock
     ExchangeQuoteRepository exchangeQuoteRepository;
+    @Mock
+    OneDepositProfitCalculator oneDepositProfitCalculator;
+    @Mock
+    QuoteForCurrencyCalculator quoteForCurrencyCalculator;
 
     ExchangeQuote exchangeQuote;
 
     @BeforeEach
     public void setup() {
-        profitCalculator = new ProfitCalculator(exchangeQuoteRepository);
+        profitCalculator = new ProfitCalculator(exchangeQuoteRepository, quoteForCurrencyCalculator, oneDepositProfitCalculator);
+
         exchangeQuote = ExchangeQuote.builder().quotesDate(Date.valueOf(LocalDate.now())).source("USD").build();
-        Quote quoteEur = Quote.builder().quote(BigDecimal.valueOf(0.88)).exchangeQuote(exchangeQuote).currency(Currency.EUR).build();
-        Quote quotePln = Quote.builder().quote(BigDecimal.valueOf(4.08)).exchangeQuote(exchangeQuote).currency(Currency.PLN).build();
-        Quote quoteUsd = Quote.builder().quote(BigDecimal.ONE).exchangeQuote(exchangeQuote).currency(Currency.USD).build();
-        exchangeQuote.setQuotes(Arrays.asList(quoteEur, quotePln, quoteUsd));
+        Quote quotePln = Quote.builder().quote(PLN_QUOTE).exchangeQuote(exchangeQuote).currency(Currency.PLN).build();
+        exchangeQuote.setQuotes(Collections.singletonList(quotePln));
         when(exchangeQuoteRepository.findFirstByOrderByQuotesDateDesc()).thenReturn(exchangeQuote);
+
+        when(quoteForCurrencyCalculator.getQuoteValueForCurrency(exchangeQuote, Currency.PLN)).thenReturn(PLN_QUOTE);
     }
 
     @Test
     @WithMockUser(username = "test@test.pl")
     public void shouldCalculateProfit() {
         Pocket pocket = new Pocket();
-        Deposit deposit = createMockDeposit(Currency.EUR, Currency.PLN, BigDecimal.valueOf(4.4));
-        Deposit deposit1 = createMockDeposit(Currency.USD, Currency.PLN, BigDecimal.valueOf(3.92));
+        Deposit deposit = MockUtils.createMockDeposit(Currency.EUR, Currency.PLN, BigDecimal.valueOf(4.4));
+        Deposit deposit1 = MockUtils.createMockDeposit(Currency.USD, Currency.PLN, BigDecimal.valueOf(3.92));
         pocket.setDeposits(Arrays.asList(deposit, deposit1));
-
-        BigDecimal profit = profitCalculator.calculateProfit(pocket);
-
-        assertEquals("1.51", profit.toPlainString());
-    }
-
-    @Test
-    @WithMockUser(username = "test@test.pl")
-    public void shouldCalculateProfitOnMinus() {
-        Pocket pocket = new Pocket();
-        Deposit deposit = createMockDeposit(Currency.EUR, Currency.PLN, BigDecimal.valueOf(5.4));
-        Deposit deposit1 = createMockDeposit(Currency.USD, Currency.PLN, BigDecimal.valueOf(4.92));
-        pocket.setDeposits(Arrays.asList(deposit, deposit1));
-
-        BigDecimal profit = profitCalculator.calculateProfit(pocket);
-
-        assertEquals("-2.57", profit.toPlainString());
-    }
-
-    @Test
-    @WithMockUser(username = "test@test.pl")
-    public void shouldCalculateProfitWithReverseCurrencies() {
-        Pocket pocket = new Pocket();
-        Deposit deposit = createMockDeposit(Currency.PLN, Currency.EUR, BigDecimal.valueOf(5.4));
-        Deposit deposit1 = createMockDeposit(Currency.PLN, Currency.USD, BigDecimal.valueOf(4.92));
-        pocket.setDeposits(Arrays.asList(deposit, deposit1));
-
-        BigDecimal profit = profitCalculator.calculateProfit(pocket);
-
-        assertEquals("2.57", profit.toPlainString());
-    }
-
-    @Test
-    @WithMockUser(username = "test@test.pl")
-    public void shouldCalculateProfitWithBothTypeOfDeposits() {
-        Pocket pocket = new Pocket();
-        Deposit deposit = createMockDeposit(Currency.EUR, Currency.PLN, BigDecimal.valueOf(5.4));
-        Deposit deposit1 = createMockDeposit(Currency.PLN, Currency.USD, BigDecimal.valueOf(4.92));
-        pocket.setDeposits(Arrays.asList(deposit, deposit1));
-
-        BigDecimal profit = profitCalculator.calculateProfit(pocket);
-
-        assertEquals("1.11", profit.toPlainString());
-    }
-
-    private Deposit createMockDeposit(Currency boughtCurrency, Currency soldCurrency, BigDecimal quote) {
-        return Deposit.builder()
-                .soldCurrency(soldCurrency)
-                .boughtCurrency(boughtCurrency)
-                .quote(quote)
-                .pocket(null)
-                .soldSum(BigDecimal.TEN)
-                .boughtSum(BigDecimal.TEN.divide(quote, RoundingMode.HALF_DOWN))
+        when(oneDepositProfitCalculator.calculateProfitFromOneDeposit(exchangeQuote, deposit, PLN_QUOTE))
+                .thenReturn(MockUtils.createMockProfit(Currency.EUR, Currency.PLN, 15.0));
+        when(oneDepositProfitCalculator.calculateProfitFromOneDeposit(exchangeQuote, deposit1, PLN_QUOTE))
+                .thenReturn(MockUtils.createMockProfit(Currency.USD, Currency.PLN, 10.0));
+        ProfitDto expectedProfit = ProfitDto.builder()
+                .depositsProfits(Arrays.asList(
+                        MockUtils.createMockProfit(Currency.EUR, Currency.PLN, 15.0),
+                        MockUtils.createMockProfit(Currency.USD, Currency.PLN, 10.0))
+                )
+                .profit(BigDecimal.valueOf(25.0))
                 .build();
+
+        ProfitDto profit = profitCalculator.calculateProfit(pocket);
+
+        assertEquals(expectedProfit, profit);
     }
 }

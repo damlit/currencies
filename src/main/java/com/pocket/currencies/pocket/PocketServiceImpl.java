@@ -63,11 +63,11 @@ public class PocketServiceImpl implements PocketService {
     @Override
     public String calculateProfit() {
         LOG.info("Start calculating profit (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
-        BigDecimal profit = profitCalculator.calculateProfit(getActiveUserPocket());
-        LOG.info("Profit = " + profit.toPlainString() + " (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
+        ProfitDto profit = profitCalculator.calculateProfit(getActiveUserPocket());
+        LOG.info("Profit = " + profit.getProfit().toPlainString() + " (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.writeValueAsString(new ProfitDto(profit));
+            return objectMapper.writeValueAsString(profit);
         } catch (JsonProcessingException jsonProcessingException) {
             throw new CalculateProfitException();
         }

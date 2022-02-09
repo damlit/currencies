@@ -59,4 +59,6 @@ const Application = () => {
 export default Application;
 
 // todo
-// 7. possibilites to choose quotes list date
+// 7. possibilites to choose quotes list date || diagrams with quotes
+// 16. profit from every sell
+// 
