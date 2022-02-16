@@ -22,7 +22,9 @@
         "hadQuote": "had quote"
     },
     "profit": {
-        "profitMsg": "If you will sell all currencies today your profit equals"
+        "profitMsg": "If you would sell all currencies today your profit equals",
+        "depositProfitMsg1": "If you would sell deposit nr",
+        "depositProfitMsg2": "your profit from it equals"
     },
     "deposits": {
         "addDeposit": "Add deposit",

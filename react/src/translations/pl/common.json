@@ -22,7 +22,9 @@
         "hadQuote": "miał kurs"
     },
     "profit": {
-        "profitMsg": "Jeśli sprzedałbyś wszystkie waluty dziś, twój zysk wyniósłby"
+        "profitMsg": "Jeśli sprzedałbyś wszystkie waluty dziś, twój zysk wyniósłby",
+        "depositProfitMsg1": "Jeśli sprzedałbyś depozyt nr",
+        "depositProfitMsg2": "twój zysk z niego wyniósłby"
     },
     "deposits": {
         "addDeposit": "Dodaj depozyt",

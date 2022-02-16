@@ -1,5 +1,5 @@
-import { getRequest, postRequest } from "./util/request.util";
-import { getAuthHeader, getContentJsonHeaderWithAuthorization } from "./util/headers.utils";
+import {getRequest, postRequest} from "./util/request.util";
+import {getAuthHeader, getContentJsonHeaderWithAuthorization} from "./util/headers.utils";
 
 export const getLastCurrencies = async (setState, currency) => {
     const response = await getRequest('/api/v1/currencies/last?currency=' + currency, getAuthHeader());
@@ -18,7 +18,6 @@ export const getProfit = async (setState) => {
     const status = await response.status;
     if (status === 200) {
         const jsonResponse = await response.json();
-        console.log(jsonResponse);
         setState(jsonResponse);
     } else {
         const textResponse = await response.text();
