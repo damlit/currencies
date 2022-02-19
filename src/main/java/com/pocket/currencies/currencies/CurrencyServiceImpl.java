@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -62,6 +63,15 @@ public class CurrencyServiceImpl implements CurrencyService {
         } catch (JsonProcessingException e) {
             throw new GetCurrenciesException();
         }
+    }
+
+    public ExchangeQuote getQuoteByDate(Date date, Currency targetCurrency) {
+        LOG.info("Getting quotes by date (" + date + ") for target currency " + targetCurrency + "(user=" + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
+        ExchangeQuote exchangeQuote = exchangeQuoteRepository.getQuotesByDate(date);
+        if (exchangeQuote != null) {
+            recalculateQuotesForOtherCurrency(exchangeQuote, targetCurrency);
+        }
+        return exchangeQuote;
     }
 
     private void recalculateQuotesForOtherCurrency(ExchangeQuote exchangeQuote, Currency targetCurrency) {

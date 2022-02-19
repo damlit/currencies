@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
@@ -31,8 +32,6 @@ public class CurrencyServiceTest {
     private QuotesService quotesService;
     @Mock
     private ExchangeQuoteRepository exchangeQuoteRepository;
-    @Mock
-    private UserService userService;
 
     @BeforeEach
     public void setup() {
@@ -62,5 +61,30 @@ public class CurrencyServiceTest {
 
         verify(exchangeQuoteRepository, times(1)).findTop10ByOrderByQuotesDateDesc();
         assertEquals(expectedMessage, message);
+    }
+
+    @Test
+    @WithMockUser
+    public void shouldReturnQuotesWhenGetLastQuotesByDate() {
+        Date date = new Date(1L);
+        ExchangeQuote expectedExchangeQuote = new ExchangeQuote(1, date, "USD", new ArrayList<>());
+        when(exchangeQuoteRepository.getQuotesByDate(date)).thenReturn(expectedExchangeQuote);
+
+        ExchangeQuote exchangeQuote = currencyService.getQuoteByDate(date, Currency.USD);
+
+        verify(exchangeQuoteRepository, times(1)).getQuotesByDate(date);
+        assertEquals(expectedExchangeQuote, exchangeQuote);
+    }
+
+    @Test
+    @WithMockUser
+    public void shouldReturnEmptyResponseWhenGetLastQuotesByDateForNotExistingDate() {
+        Date date = new Date(2L);
+        when(exchangeQuoteRepository.getQuotesByDate(date)).thenReturn(null);
+
+        ExchangeQuote exchangeQuote = currencyService.getQuoteByDate(new Date(2L), Currency.USD);
+
+        verify(exchangeQuoteRepository, times(1)).getQuotesByDate(date);
+        assertNull(exchangeQuote);
     }
 }
