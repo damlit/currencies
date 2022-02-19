@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -22,13 +23,15 @@ public class CurrencyController {
 
     @GetMapping(value = "/last")
     @ResponseStatus(HttpStatus.OK)
-    public String getLastCurrencies(@RequestParam("currency") String currency) {
+    @ResponseBody
+    public ExchangeQuote getLastCurrencies(@RequestParam("currency") String currency) {
         return currencyService.getLastQuotes(Currency.valueOf(currency));
     }
 
     @GetMapping(value = "/quotes")
     @ResponseStatus(HttpStatus.OK)
-    public String getQuotes(@RequestParam("currency") String currency) {
+    @ResponseBody
+    public List<ExchangeQuote> getQuotes(@RequestParam("currency") String currency) {
         return currencyService.getQuotes(Currency.valueOf(currency));
     }
 

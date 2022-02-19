@@ -68,7 +68,7 @@ public class CurrencyControllerIntegrationTest {
     @Test
     @WithMockUser()
     public void testGetLastCurrenciesChooseByDate() throws Exception {
-        String expectedResponse = "{\"id\":2,\"quotesDate\":2,\"source\":null,\"quotes\":[]}";
+        String expectedResponse = "{\"id\":2,\"quotesDate\":\"1970-01-01T00:00:00.002+00:00\",\"source\":null,\"quotes\":[]}";
         ExchangeQuote exchangeQuote = ExchangeQuote.builder().id(1).quotesDate(new Date(1L)).build();
         ExchangeQuote exchangeQuote2 = ExchangeQuote.builder().id(2).quotesDate(new Date(2L)).build();
         exchangeQuoteRepository.save(exchangeQuote);

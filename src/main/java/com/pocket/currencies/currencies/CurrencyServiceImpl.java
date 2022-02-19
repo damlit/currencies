@@ -1,12 +1,10 @@
 package com.pocket.currencies.currencies;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pocket.currencies.client.QuotesService;
 import com.pocket.currencies.currencies.entity.Currency;
 import com.pocket.currencies.currencies.entity.ExchangeQuote;
 import com.pocket.currencies.currencies.entity.Quote;
-import com.pocket.currencies.currencies.exception.GetCurrenciesException;
 import com.pocket.currencies.currencies.exception.UpdateCurrenciesFailedException;
 import com.pocket.currencies.currencies.repository.ExchangeQuoteRepository;
 import lombok.AllArgsConstructor;
@@ -41,28 +39,20 @@ public class CurrencyServiceImpl implements CurrencyService {
         }
     }
 
-    public String getLastQuotes(Currency targetCurrency) {
+    public ExchangeQuote getLastQuotes(Currency targetCurrency) {
         LOG.info("Getting last quotes from database (user=" + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
         ObjectMapper objectMapper = new ObjectMapper();
         ExchangeQuote newestExchangeQuote = exchangeQuoteRepository.findFirstByOrderByQuotesDateDesc();
         recalculateQuotesForOtherCurrency(newestExchangeQuote, targetCurrency);
-        try {
-            return objectMapper.writeValueAsString(newestExchangeQuote);
-        } catch (JsonProcessingException e) {
-            throw new GetCurrenciesException();
-        }
+        return newestExchangeQuote;
     }
 
-    public String getQuotes(Currency targetCurrency) {
+    public List<ExchangeQuote> getQuotes(Currency targetCurrency) {
         LOG.info("Getting last 10 quotes from database (user=" + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
         ObjectMapper objectMapper = new ObjectMapper();
         List<ExchangeQuote> newestExchangeQuote = exchangeQuoteRepository.findTop10ByOrderByQuotesDateDesc();
         newestExchangeQuote.forEach(exchangeQuote -> recalculateQuotesForOtherCurrency(exchangeQuote, targetCurrency));
-        try {
-            return objectMapper.writeValueAsString(newestExchangeQuote);
-        } catch (JsonProcessingException e) {
-            throw new GetCurrenciesException();
-        }
+        return newestExchangeQuote;
     }
 
     public ExchangeQuote getQuoteByDate(Date date, Currency targetCurrency) {

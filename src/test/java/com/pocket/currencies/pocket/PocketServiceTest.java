@@ -7,6 +7,7 @@ import com.pocket.currencies.pocket.entity.Deposit;
 import com.pocket.currencies.pocket.entity.DepositDto;
 import com.pocket.currencies.pocket.entity.Pocket;
 import com.pocket.currencies.pocket.entity.ProfitDto;
+import com.pocket.currencies.pocket.entity.Profit;
 import com.pocket.currencies.pocket.repository.DepositRepository;
 import com.pocket.currencies.pocket.repository.PocketRepository;
 import com.pocket.currencies.users.UserService;
@@ -87,8 +88,6 @@ public class PocketServiceTest {
     @Test
     @WithMockUser
     public void shouldReturnProfit() {
-        String expectedMessage = "{\"profit\":10.21," +
-                "\"depositsProfits\":[{\"depositId\":10,\"profit\":10.21,\"soldSum\":10,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\"}]}";
         User user = MockUtils.getMockedUser();
         Pocket pocket = new Pocket(1, user, new ArrayList<>());
         List<Deposit> deposits = new ArrayList<>(
@@ -96,14 +95,16 @@ public class PocketServiceTest {
         );
         pocket.setDeposits(deposits);
         user.setPocket(pocket);
+        Profit expectedProfit = Profit.builder().depositId(10L).profit(BigDecimal.valueOf(10.21)).soldSum(BigDecimal.TEN).boughtCurrency(Currency.EUR).soldCurrency(Currency.PLN).build();
+        ProfitDto profitDto = ProfitDto.builder().profit(BigDecimal.valueOf(10.21)).depositsProfits(Collections.singletonList(expectedProfit)).build();
         when(userService.getActiveUser()).thenReturn(user);
         when(pocketRepository.getById(1L)).thenReturn(pocket);
         when(profitCalculator.calculateProfit(pocket)).thenReturn(getMockedProfitDto());
 
-        String message = pocketService.calculateProfit();
+        ProfitDto profit = pocketService.calculateProfit();
 
         verify(profitCalculator, times(1)).calculateProfit(pocket);
-        assertEquals(expectedMessage, message);
+        assertEquals(profitDto, profit);
     }
 
     private ProfitDto getMockedProfitDto() {
@@ -118,11 +119,6 @@ public class PocketServiceTest {
     @Test
     @WithMockUser
     public void shouldReturnDeposits() {
-        String expectedMessage = "["
-                + "{\"id\":1,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\",\"quote\":10.0,\"soldSum\":1,\"boughtSum\":10},"
-                + "{\"id\":2,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\",\"quote\":10.0,\"soldSum\":1,\"boughtSum\":10},"
-                + "{\"id\":3,\"soldCurrency\":\"PLN\",\"boughtCurrency\":\"EUR\",\"quote\":10.0,\"soldSum\":1,\"boughtSum\":10}"
-                + "]";
         User user = MockUtils.getMockedUser();
         Pocket pocket = new Pocket(1, user, new ArrayList<>());
         Deposit deposit1 = new Deposit(1, Currency.PLN, Currency.EUR, BigDecimal.valueOf(10.0), BigDecimal.ONE, BigDecimal.TEN, pocket);
@@ -135,9 +131,9 @@ public class PocketServiceTest {
         when(pocketRepository.getById(1L)).thenReturn(pocket);
         when(depositRepository.getAllByPocket(pocket, PageRequest.of(0, 3))).thenReturn(deposits);
 
-        String message = pocketService.getAllDepositsForCurrentUser(0, 3);
+        List<Deposit> depositsList = pocketService.getAllDepositsForCurrentUser(0, 3);
 
         verify(depositRepository, times(1)).getAllByPocket(pocket, PageRequest.of(0, 3));
-        assertEquals(expectedMessage, message);
+        assertEquals(deposits, depositsList);
     }
 }

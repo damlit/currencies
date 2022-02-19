@@ -1,14 +1,10 @@
 package com.pocket.currencies.pocket;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pocket.currencies.pocket.calculator.ProfitCalculator;
 import com.pocket.currencies.pocket.entity.Deposit;
 import com.pocket.currencies.pocket.entity.DepositDto;
 import com.pocket.currencies.pocket.entity.Pocket;
 import com.pocket.currencies.pocket.entity.ProfitDto;
-import com.pocket.currencies.pocket.exception.CalculateProfitException;
-import com.pocket.currencies.pocket.exception.GetDepositsException;
 import com.pocket.currencies.pocket.exception.IncorrectInputDataException;
 import com.pocket.currencies.pocket.repository.DepositRepository;
 import com.pocket.currencies.pocket.repository.PocketRepository;
@@ -61,28 +57,17 @@ public class PocketServiceImpl implements PocketService {
     }
 
     @Override
-    public String calculateProfit() {
+    public ProfitDto calculateProfit() {
         LOG.info("Start calculating profit (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
         ProfitDto profit = profitCalculator.calculateProfit(getActiveUserPocket());
         LOG.info("Profit = " + profit.getProfit().toPlainString() + " (user = " + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.writeValueAsString(profit);
-        } catch (JsonProcessingException jsonProcessingException) {
-            throw new CalculateProfitException();
-        }
+        return profit;
     }
 
     @Override
-    public String getAllDepositsForCurrentUser(int page, int size) {
+    public List<Deposit> getAllDepositsForCurrentUser(int page, int size) {
         LOG.info("Getting deposits (user=" + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<Deposit> deposits = depositRepository.getAllByPocket(getActiveUserPocket(), PageRequest.of(page, size));
-        try {
-            return objectMapper.writeValueAsString(deposits);
-        } catch (JsonProcessingException e) {
-            throw new GetDepositsException();
-        }
+        return depositRepository.getAllByPocket(getActiveUserPocket(), PageRequest.of(page, size));
     }
 
     @Override

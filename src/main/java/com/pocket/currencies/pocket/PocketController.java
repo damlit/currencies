@@ -1,6 +1,8 @@
 package com.pocket.currencies.pocket;
 
+import com.pocket.currencies.pocket.entity.Deposit;
 import com.pocket.currencies.pocket.entity.DepositDto;
+import com.pocket.currencies.pocket.entity.ProfitDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -32,13 +36,15 @@ public class PocketController {
 
     @GetMapping(value = "/profit")
     @ResponseStatus(HttpStatus.OK)
-    public String calculateProfit() {
+    @ResponseBody
+    public ProfitDto calculateProfit() {
         return pocketService.calculateProfit();
     }
 
     @GetMapping(value = "/deposit/{page}/{size}")
     @ResponseStatus(HttpStatus.OK)
-    public String getDeposits(@PathVariable int page, @PathVariable int size) {
+    @ResponseBody
+    public List<Deposit> getDeposits(@PathVariable int page, @PathVariable int size) {
         return pocketService.getAllDepositsForCurrentUser(page, size);
     }
 

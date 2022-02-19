@@ -4,7 +4,6 @@ import com.pocket.currencies.client.QuotesService;
 import com.pocket.currencies.currencies.entity.Currency;
 import com.pocket.currencies.currencies.entity.ExchangeQuote;
 import com.pocket.currencies.currencies.repository.ExchangeQuoteRepository;
-import com.pocket.currencies.users.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +15,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -41,26 +41,25 @@ public class CurrencyServiceTest {
     @Test
     @WithMockUser
     public void shouldGetLastQuotes() {
-        when(exchangeQuoteRepository.findFirstByOrderByQuotesDateDesc()).thenReturn(new ExchangeQuote(1, new Date(1L), "USD", new ArrayList<>()));
-        String expectedMessage = "{\"id\":1,\"quotesDate\":1,\"source\":\"USD\",\"quotes\":[]}";
+        ExchangeQuote expectedExchangeQuote = new ExchangeQuote(1, new Date(1L), "USD", new ArrayList<>());
+        when(exchangeQuoteRepository.findFirstByOrderByQuotesDateDesc()).thenReturn(expectedExchangeQuote);
 
-        String message = currencyService.getLastQuotes(Currency.USD);
+        ExchangeQuote exchangeQuote = currencyService.getLastQuotes(Currency.USD);
 
         verify(exchangeQuoteRepository, times(1)).findFirstByOrderByQuotesDateDesc();
-        assertEquals(expectedMessage, message);
+        assertEquals(expectedExchangeQuote, exchangeQuote);
     }
 
     @Test
     @WithMockUser
     public void shouldGetLast10Quotes() {
-        ExchangeQuote exchangeQuote = new ExchangeQuote(1, new Date(1L), "USD", new ArrayList<>());
-        String expectedMessage = "[{\"id\":1,\"quotesDate\":1,\"source\":\"USD\",\"quotes\":[]}]";
-        when(exchangeQuoteRepository.findTop10ByOrderByQuotesDateDesc()).thenReturn(Collections.singletonList(exchangeQuote));
+        List<ExchangeQuote> expectedExchangeQuote = Collections.singletonList(new ExchangeQuote(1, new Date(1L), "USD", new ArrayList<>()));
+        when(exchangeQuoteRepository.findTop10ByOrderByQuotesDateDesc()).thenReturn(expectedExchangeQuote);
 
-        String message = currencyService.getQuotes(Currency.USD);
+        List<ExchangeQuote> exchangeQuotes = currencyService.getQuotes(Currency.USD);
 
         verify(exchangeQuoteRepository, times(1)).findTop10ByOrderByQuotesDateDesc();
-        assertEquals(expectedMessage, message);
+        assertEquals(expectedExchangeQuote, exchangeQuotes);
     }
 
     @Test
