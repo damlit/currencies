@@ -19,7 +19,9 @@
     "quotes": {
         "chooseTarget": "Choose target currency",
         "date": "date",
-        "hadQuote": "had quote"
+        "hadQuote": "had quote",
+        "notAvailable": "Quotes aren't available for this date",
+        "chooseDate": "Choose date"
     },
     "profit": {
         "profitMsg": "If you would sell all currencies today your profit equals",

@@ -59,5 +59,6 @@ const Application = () => {
 export default Application;
 
 // todo
-// 7. possibilites to choose quotes list date || diagrams with quotes
-// 
+// 7. possibilites to choose quotes list date (FE)
+// 18. send token confirmation link on email
+//

@@ -19,7 +19,9 @@
     "quotes": {
         "chooseTarget": "Wybierz docelową walutę",
         "date": "data",
-        "hadQuote": "miał kurs"
+        "hadQuote": "miał kurs",
+        "notAvailable": "Kursy nie są dostępne dla wybranej daty",
+        "chooseDate": "Wybierz datę"
     },
     "profit": {
         "profitMsg": "Jeśli sprzedałbyś wszystkie waluty dziś, twój zysk wyniósłby",
