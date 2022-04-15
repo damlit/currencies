@@ -42,7 +42,7 @@ export const getProfit = async (setState) => {
 }
 
 export const getDeposits = async (setState, page) => {
-    const response = await getRequest('/api/v1/pocket/deposit/' + page + '/5', getAuthHeader());
+    const response = await getRequest('/api/v1/pocket/deposit?page=' + page + '&size=5', getAuthHeader());
     const status = response.status;
     if (status === 200) {
         const jsonResponse = await response.json();

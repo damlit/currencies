@@ -4,6 +4,7 @@ import com.pocket.currencies.pocket.entity.Deposit;
 import com.pocket.currencies.pocket.entity.DepositDto;
 import com.pocket.currencies.pocket.entity.ProfitDto;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,11 +42,11 @@ public class PocketController {
         return pocketService.calculateProfit();
     }
 
-    @GetMapping(value = "/deposit/{page}/{size}")
+    @GetMapping(value = "/deposit")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<Deposit> getDeposits(@PathVariable int page, @PathVariable int size) {
-        return pocketService.getAllDepositsForCurrentUser(page, size);
+    public List<Deposit> getDeposits(Pageable pageable) {
+        return pocketService.getAllDepositsForCurrentUser(pageable);
     }
 
     @GetMapping(value = "/deposit/count")

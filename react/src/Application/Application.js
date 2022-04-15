@@ -59,6 +59,9 @@ const Application = () => {
 export default Application;
 
 // todo
-// 7. possibilites to choose quotes list date (FE)
 // 18. send token confirmation link on email
-//
+// 19. remove errors on FE
+// 21. add sell button and summary of profits in profit section
+// 22. reload redux quotes after update (refactor redux)
+// 23. add sell button with dialog, and profits from sales
+// 24. add dialogs?

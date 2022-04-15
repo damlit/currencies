@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import java.math.BigDecimal;
@@ -129,9 +130,9 @@ public class PocketServiceTest {
         user.setPocket(pocket);
         when(userService.getActiveUser()).thenReturn(user);
         when(pocketRepository.getById(1L)).thenReturn(pocket);
-        when(depositRepository.getAllByPocket(pocket, PageRequest.of(0, 3))).thenReturn(deposits);
+        when(depositRepository.getAllByPocket(pocket, Pageable.ofSize(3))).thenReturn(deposits);
 
-        List<Deposit> depositsList = pocketService.getAllDepositsForCurrentUser(0, 3);
+        List<Deposit> depositsList = pocketService.getAllDepositsForCurrentUser(Pageable.ofSize(3));
 
         verify(depositRepository, times(1)).getAllByPocket(pocket, PageRequest.of(0, 3));
         assertEquals(deposits, depositsList);
