@@ -1,28 +1,27 @@
-import {useEffect, useState} from "react";
-import {getCurrenciesByDate, getLastCurrencies} from "../request/currencies.request";
-import {QuotesLabel, QuotesWrapper} from './Quotes.styled.js';
-import {getDateFromTimestamp} from "./quotes.utils";
-import ChooseCurrency from "../ChooseCurrency";
-import {Card} from "../SmallComponents/Card.styled";
-import {useTranslation} from "react-i18next";
+import { useEffect, useState } from 'react';
+import { QuotesLabel, QuotesWrapper } from './Quotes.styled.js';
+import { getDateFromTimestamp } from './quotes.utils';
+import ChooseCurrency from '../ChooseCurrency';
+import { Card } from '../SmallComponents/Card.styled';
+import { useTranslation } from 'react-i18next';
 import DatePicker from 'react-datepicker';
 
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-datepicker/dist/react-datepicker.css';
+import { useDispatch, useSelector } from '../store';
+import { quotesActions } from '../store/slices/Quotes';
 
 const Quotes = () => {
+    const dispatch = useDispatch();
     const {t} = useTranslation('common');
+
+    const { data: currencies } = useSelector(state => state.quotes);
 
     const [targetCurrency, setTargetCurrency] = useState('PLN');
     const [quotesDate, setQuotesDate] = useState(new Date());
-    const [currencies, setCurrencies] = useState();
 
     useEffect(() => {
-        getCurrenciesByDate(setCurrencies, targetCurrency, quotesDate);
-    }, [targetCurrency, quotesDate]);
-
-    useEffect(() => {
-        getLastCurrencies(setCurrencies, targetCurrency);
-    }, []);
+        dispatch(quotesActions.getQuotes({currency: targetCurrency, date: quotesDate.toLocaleDateString()}));
+    }, [dispatch, targetCurrency, quotesDate]);
 
     const handleChangeTargetCurrency = (e) => {
         setTargetCurrency(e.target.value);
@@ -43,7 +42,7 @@ const Quotes = () => {
             <QuotesLabel>
                 <span>{t('quotes.date')}: {getCurrenciesDate}</span>
             </QuotesLabel>
-            {currencies
+            {currencies?.quotes
                 ? currencies.quotes.map(quote =>
                     <div key={quote.id}>
                         {quote.currency} {t('quotes.hadQuote')} {quote.quote}

@@ -5,6 +5,7 @@ import com.pocket.currencies.pocket.repository.PocketRepository;
 import com.pocket.currencies.registration.ConfirmationTokenService;
 import com.pocket.currencies.users.entity.User;
 import com.pocket.currencies.users.entity.UserDto;
+import com.pocket.currencies.users.entity.UserRequestDto;
 import com.pocket.currencies.users.entity.UserRole;
 import com.pocket.currencies.users.exception.EmailAlreadyExistsException;
 import com.pocket.currencies.users.repository.UserRepository;
@@ -38,10 +39,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
     }
 
-    public String signUpUser(UserDto userDto) {
-        return userRepository.findFirstByEmail(userDto.getEmail())
+    public String signUpUser(UserRequestDto userRequestDto) {
+        return userRepository.findFirstByEmail(userRequestDto.getEmail())
                 .map(this::createTokenForExistingUser)
-                .orElseGet(() -> createNewToken(createNewUserAccount(userDto)));
+                .orElseGet(() -> createNewToken(createNewUserAccount(userRequestDto)));
     }
 
     public int enableUser(String email) {
@@ -51,6 +52,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public User getActiveUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userRepository.findByEmail(authentication.getName());
+    }
+
+    public UserDto getActiveUserDto() {
+        User currentUser = getActiveUser();
+        return new UserDto(currentUser);
     }
 
     public UserRole getActiveUserRole() {
@@ -68,12 +74,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return createNewToken(userFromDb);
     }
 
-    private User createNewUserAccount(UserDto userDto) {
+    private User createNewUserAccount(UserRequestDto userRequestDto) {
         Pocket newPocket = new Pocket();
-        String encodedPassword = bCryptPasswordEncoder.encode(userDto.getPassword());
+        String encodedPassword = bCryptPasswordEncoder.encode(userRequestDto.getPassword());
         User user = User.builder()
                 .password(encodedPassword)
-                .email(userDto.getEmail())
+                .email(userRequestDto.getEmail())
                 .userRole(UserRole.USER)
                 .pocket(newPocket)
                 .locked(false)

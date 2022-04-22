@@ -1,5 +1,6 @@
 package com.pocket.currencies.users;
 
+import com.pocket.currencies.users.entity.UserDto;
 import com.pocket.currencies.users.entity.UserRole;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,5 +20,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserRole getUserRole() {
         return userService.getActiveUserRole();
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto getUser() {
+        return userService.getActiveUserDto();
     }
 }

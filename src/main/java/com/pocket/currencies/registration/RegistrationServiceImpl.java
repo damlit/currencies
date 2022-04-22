@@ -6,7 +6,7 @@ import com.pocket.currencies.registration.exception.EmailIsNotValidException;
 import com.pocket.currencies.registration.exception.TokenExpiredException;
 import com.pocket.currencies.registration.exception.TokenIsNotValidException;
 import com.pocket.currencies.users.UserService;
-import com.pocket.currencies.users.entity.UserDto;
+import com.pocket.currencies.users.entity.UserRequestDto;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,15 +26,15 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailValidator emailValidator;
 
-    public String register(UserDto userDto) {
-        LOG.info("Registration user (" + userDto.getEmail() + ") is starting");
-        boolean isValidEmail = emailValidator.test(userDto.getEmail());
+    public String register(UserRequestDto userRequestDto) {
+        LOG.info("Registration user (" + userRequestDto.getEmail() + ") is starting");
+        boolean isValidEmail = emailValidator.test(userRequestDto.getEmail());
         if (!isValidEmail) {
-            LOG.info("Email " + userDto.getEmail() + " is not valid" );
+            LOG.info("Email " + userRequestDto.getEmail() + " is not valid" );
             throw new EmailIsNotValidException();
         }
-        LOG.info("Email " + userDto.getEmail() + " is valid" );
-        return userService.signUpUser(userDto);
+        LOG.info("Email " + userRequestDto.getEmail() + " is valid" );
+        return userService.signUpUser(userRequestDto);
     }
 
     public String confirmToken(String token) {

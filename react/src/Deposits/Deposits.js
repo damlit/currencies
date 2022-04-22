@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {getDeposits, removeDeposit, addDeposit, getAmountOfDeposits} from "../request/currencies.request";
+import { useEffect, useMemo, useState } from 'react';
+import { removeDeposit, addDeposit } from '../request/currencies.request';
 import {
     DepositsWrapper,
     DepositLabel,
@@ -8,48 +8,50 @@ import {
     DepositForm,
     DepositFrame,
     DepositInput
-} from "./Deposits.styled";
-import {Deposit} from "./deposit.types";
-import ChooseCurrency from "../ChooseCurrency";
-import {BlueButton, ButtonGroup, ButtonToggle} from "../SmallComponents/BlueButton.styled";
-import {Card} from "../SmallComponents/Card.styled";
-import {makeFunctionIfFieldsHasBeenFilled} from "../utils/validationFunctions.utils";
-import {useTranslation} from "react-i18next";
-import {changeNumberToPages} from "../utils/pages.utils";
+} from './Deposits.styled';
+import { Deposit } from './deposit.types';
+import ChooseCurrency from '../ChooseCurrency';
+import { BlueButton, ButtonGroup, ButtonToggle } from '../SmallComponents/BlueButton.styled';
+import { Card } from '../SmallComponents/Card.styled';
+import { makeFunctionIfFieldsHasBeenFilled } from '../utils/validationFunctions.utils';
+import { useTranslation } from 'react-i18next';
+import { changeNumberToPages } from '../utils/pages.utils';
+import { useDispatch, useSelector } from '../store';
+import { depositsActions } from '../store/slices/Deposits';
+
+const PAGE_LIMIT = 5;
 
 const Deposits = () => {
+    const dispatch = useDispatch();
     const {t} = useTranslation('common');
+    const { depositsByPage } = useSelector(state => state.deposits);
 
-    const [deposits, setDeposits] = useState([]);
     const [currentDepositsPage, setCurrentDepositsPage] = useState(0);
-    const [depositsPages, setDepositsPages] = useState([]);
-    const [amountOfDeposits, setAmountOfDeposits] = useState([]);
 
     const [soldSum, setSoldSum] = useState(100);
     const [soldCurrency, setSoldCurrency] = useState('PLN');
     const [quote, setQuote] = useState(1.0);
     const [boughtCurrency, setBoughtCurrency] = useState('EUR');
 
+    const getDepositsParams = useMemo(() => ({ page: currentDepositsPage, size: PAGE_LIMIT }), [currentDepositsPage]);
+
     useEffect(() => {
-        getDeposits(setDeposits, currentDepositsPage);
-        getAmountOfDeposits(setAmountOfDeposits);
-        changeNumberToPages(amountOfDeposits, 5, setDepositsPages);
-    }, [currentDepositsPage, amountOfDeposits]);
+        dispatch(depositsActions.getDeposits(getDepositsParams));
+    }, [dispatch, getDepositsParams]);
 
     const handleRemoveDeposit = async (e, id) => {
         await removeDeposit(id);
-        getDeposits(setDeposits, currentDepositsPage);
+        dispatch(depositsActions.getDeposits(getDepositsParams));
     }
 
-
     const handleAddDeposit = async (e) => {
-        makeFunctionIfFieldsHasBeenFilled(addNewDeposit, e, [soldCurrency, boughtCurrency]);
+        await makeFunctionIfFieldsHasBeenFilled(addNewDeposit, e, [soldCurrency, boughtCurrency]);
+        dispatch(depositsActions.getDeposits(getDepositsParams));
     }
 
     const addNewDeposit = async (e) => {
         const deposit = new Deposit(soldCurrency, boughtCurrency, Number(quote), Number(soldSum));
         await addDeposit(deposit);
-        getDeposits(setDeposits, currentDepositsPage);
     }
 
     const handleSoldCurrency = (e) => {
@@ -95,20 +97,20 @@ const Deposits = () => {
             </DepositForm>
         </Card>
         <Card>
-            <span>{t('deposits.yourDeposits')} ({amountOfDeposits}):</span>
-            {deposits
-                ? deposits.map(deposit =>
+            <span>{t('deposits.yourDeposits')} ({depositsByPage.totalElements}):</span>
+            {depositsByPage.content
+                ? depositsByPage.content.map(deposit =>
                     <DepositFrame key={'depositNr_' + deposit.id}>
                         <DepositLabel>{deposit.soldSum} {deposit.soldCurrency} {t('deposits.hasBeenSold')} {deposit.boughtSum} {deposit.boughtCurrency} (id={deposit.id}).</DepositLabel>
                         <BlueButton
                             onClick={e => handleRemoveDeposit(e, deposit.id)}>{t('deposits.remove')}</BlueButton>
                     </DepositFrame>
                 )
-                : ""}
+                : 'Loading...'}
             <div>
                 <ButtonGroup>
-                    {depositsPages
-                        ? depositsPages.map(pageNumber =>
+                    {depositsByPage.totalElements
+                        ? changeNumberToPages(depositsByPage.totalElements, PAGE_LIMIT).map(pageNumber =>
                             <ButtonToggle key={'depositPage_' + pageNumber}
                                           onClick={e => handleChangePageNumber(e, pageNumber)}
                                           active={pageNumber === currentDepositsPage + 1}>

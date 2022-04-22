@@ -1,16 +1,17 @@
 package com.pocket.currencies.users.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-@Builder
 public class UserDto {
 
+    private long id;
     private String email;
-    private String password;
+    private UserRole userRole;
+
+    public UserDto(User user) {
+        this.id = user.getId();
+        this.email = user.getEmail();
+        this.userRole = user.getUserRole();
+    }
 }

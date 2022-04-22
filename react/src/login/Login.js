@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { getAuthToken, getRegistrationToken, sendConfirmationToken } from '../request/login.request';
 import { LoginText, LoginWrapper } from './Login.styled.js';
-import { BlueButton, ButtonToggle, ButtonGroup } from "../SmallComponents/BlueButton.styled";
+import { BlueButton, ButtonToggle, ButtonGroup } from '../SmallComponents/BlueButton.styled';
 import { makeFunctionIfFieldsHasBeenFilled } from '../utils/validationFunctions.utils';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import { Card } from '../SmallComponents/Card.styled';
+import { useDispatch } from '../store';
+import { login } from '../store/slices/auth';
+import PropTypes from 'prop-types';
 
 const Login = ({ setToken }) => {
   const { t, i18n } = useTranslation('common');
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,17 +19,18 @@ const Login = ({ setToken }) => {
   const [signUpToken, setSignUpToken] = useState('');
   const [language, setLanguage] = useState('en');
 
-  const handleSubmitTest = async e => {
+  const handleSubmit = async e => {
     if (signUp) {
-      makeFunctionIfFieldsHasBeenFilled(submitSignUp, e, [email, password]);
+      await makeFunctionIfFieldsHasBeenFilled(submitSignUp, e, [email, password]);
     } else {
-      makeFunctionIfFieldsHasBeenFilled(submitLogIn, e, [email, password]);
+      await makeFunctionIfFieldsHasBeenFilled(submitLogIn, e, [email, password]);
     }
   }
 
   const submitLogIn = async e => {
     e.preventDefault();
     const { status, token } = await getAuthToken(email, password);
+    dispatch(login({email, password}));
 
     if (status === 200 || status === 201) {
       setToken(token);
@@ -48,7 +52,7 @@ const Login = ({ setToken }) => {
   }
 
   const handleConfirmationToken = async e => {
-    makeFunctionIfFieldsHasBeenFilled(confirmSignUpToken, e, [signUpToken]);
+    await makeFunctionIfFieldsHasBeenFilled(confirmSignUpToken, e, [signUpToken]);
   }
 
   const confirmSignUpToken = async e => {
@@ -66,7 +70,7 @@ const Login = ({ setToken }) => {
   const handleChangeLanguage = async (e) => {
     e.preventDefault();
     setLanguage(e.target.value);
-    i18n.changeLanguage(e.target.value);
+    await i18n.changeLanguage(e.target.value);
   }
 
   return (
@@ -95,7 +99,7 @@ const Login = ({ setToken }) => {
             {t('login.signUp')}
           </ButtonToggle>
         </ButtonGroup>
-        <form onSubmit={handleSubmitTest} id="userForm">
+        <form onSubmit={handleSubmit} id="userForm">
           <label>
             <LoginText>{t('login.email')}</LoginText>
             <input type="text" onChange={e => setEmail(e.target.value)} />

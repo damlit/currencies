@@ -1,28 +1,26 @@
 
 export const postRequest = async (endpoint, headers, body) => {
-    var loginOptions = {
+    const loginOptions = {
         method: 'POST',
         headers: headers,
         body: body,
         redirect: 'follow'
     };
     try {
-        const response = await fetch(endpoint, loginOptions);
-        return response;
+        return await fetch(endpoint, loginOptions);
     } catch (error) {
         return console.log('error', error);
     }
 }
 
 export const getRequest = async (endpoint, headers) => {
-    var loginOptions = {
+    const loginOptions = {
         method: 'GET',
         headers: headers,
         redirect: 'follow'
     };
     try {
-        const response = await fetch(endpoint, loginOptions);
-        return response;
+        return await fetch(endpoint, loginOptions);
     } catch (error) {
         return console.log('error', error);
     }

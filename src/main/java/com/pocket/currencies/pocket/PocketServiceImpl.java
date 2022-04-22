@@ -13,6 +13,7 @@ import com.pocket.currencies.users.entity.User;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -65,7 +65,7 @@ public class PocketServiceImpl implements PocketService {
     }
 
     @Override
-    public List<Deposit> getAllDepositsForCurrentUser(Pageable pageable) {
+    public Page<Deposit> getAllDepositsForCurrentUser(Pageable pageable) {
         LOG.info("Getting deposits (user=" + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
         return depositRepository.getAllByPocket(getActiveUserPocket(), pageable);
     }

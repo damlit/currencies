@@ -7,7 +7,7 @@ import com.pocket.currencies.registration.exception.TokenExpiredException;
 import com.pocket.currencies.registration.exception.TokenIsNotValidException;
 import com.pocket.currencies.users.UserService;
 import com.pocket.currencies.users.entity.User;
-import com.pocket.currencies.users.entity.UserDto;
+import com.pocket.currencies.users.entity.UserRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,21 +59,21 @@ public class RegistrationServiceTest {
 
     @Test
     public void shouldRegisterUser() {
-        UserDto userDto = new UserDto("test@test.pl", "test123");
-        when(emailValidator.test(userDto.getEmail())).thenReturn(true);
+        UserRequestDto userRequestDto = new UserRequestDto("test@test.pl", "test123");
+        when(emailValidator.test(userRequestDto.getEmail())).thenReturn(true);
 
-        registrationService.register(userDto);
+        registrationService.register(userRequestDto);
 
-        verify(userService, times(1)).signUpUser(userDto);
+        verify(userService, times(1)).signUpUser(userRequestDto);
     }
 
     @Test
     public void shouldThrowExceptionForNotValidationEmail() {
-        UserDto userDto = new UserDto("test.pl", "test123");
-        when(emailValidator.test(userDto.getEmail())).thenReturn(false);
+        UserRequestDto userRequestDto = new UserRequestDto("test.pl", "test123");
+        when(emailValidator.test(userRequestDto.getEmail())).thenReturn(false);
 
         Assertions.assertThrows(EmailIsNotValidException.class,
-        () -> registrationService.register(userDto));
+        () -> registrationService.register(userRequestDto));
     }
 
     @Test

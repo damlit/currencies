@@ -3,7 +3,7 @@ package com.pocket.currencies.users;
 import com.pocket.currencies.pocket.repository.PocketRepository;
 import com.pocket.currencies.registration.ConfirmationTokenService;
 import com.pocket.currencies.users.entity.User;
-import com.pocket.currencies.users.entity.UserDto;
+import com.pocket.currencies.users.entity.UserRequestDto;
 import com.pocket.currencies.users.entity.UserRole;
 import com.pocket.currencies.users.exception.EmailAlreadyExistsException;
 import com.pocket.currencies.users.repository.UserRepository;
@@ -46,14 +46,14 @@ public class UserServiceTest {
 
     @Test
     public void shouldReturnTokenForExistingUser() {
-        UserDto userDto = new UserDto("example@test.pl", "123");
+        UserRequestDto userRequestDto = new UserRequestDto("example@test.pl", "123");
         User user = User.builder().email("example@test.pl").userRole(UserRole.USER).locked(false).enabled(false).build();
-        when(userRepository.findFirstByEmail(userDto.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.findFirstByEmail(userRequestDto.getEmail())).thenReturn(Optional.of(user));
         UUID uuid = UUID.randomUUID();
         MockedStatic<UUID> mockedSettings = mockStatic(UUID.class);
         when(UUID.randomUUID()).thenReturn(uuid);
 
-        String token = userService.signUpUser(userDto);
+        String token = userService.signUpUser(userRequestDto);
 
         verify(confirmationTokenService, times(1)).saveConfirmationToken(any());
         assertEquals(uuid.toString(), token);
@@ -62,22 +62,22 @@ public class UserServiceTest {
 
     @Test
     public void shouldThrowExceptionForSignUpExistingUser() {
-        UserDto userDto = new UserDto("example@test.pl", "123");
+        UserRequestDto userRequestDto = new UserRequestDto("example@test.pl", "123");
         User user = User.builder().email("example@test.pl").userRole(UserRole.USER).locked(false).enabled(true).build();
-        when(userRepository.findFirstByEmail(userDto.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.findFirstByEmail(userRequestDto.getEmail())).thenReturn(Optional.of(user));
 
-        Assertions.assertThrows(EmailAlreadyExistsException.class, () -> userService.signUpUser(userDto));
+        Assertions.assertThrows(EmailAlreadyExistsException.class, () -> userService.signUpUser(userRequestDto));
     }
 
     @Test
     public void shouldReturnTokenForNewUserUser() {
-        UserDto userDto = new UserDto("example@test.pl", "123");
-        when(userRepository.findFirstByEmail(userDto.getEmail())).thenReturn(Optional.empty());
+        UserRequestDto userRequestDto = new UserRequestDto("example@test.pl", "123");
+        when(userRepository.findFirstByEmail(userRequestDto.getEmail())).thenReturn(Optional.empty());
         UUID uuid = UUID.randomUUID();
         MockedStatic<UUID> mockedSettings = mockStatic(UUID.class);
         when(UUID.randomUUID()).thenReturn(uuid);
 
-        String token = userService.signUpUser(userDto);
+        String token = userService.signUpUser(userRequestDto);
 
         verify(confirmationTokenService, times(1)).saveConfirmationToken(any());
         assertEquals(uuid.toString(), token);

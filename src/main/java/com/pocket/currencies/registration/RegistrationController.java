@@ -1,6 +1,6 @@
 package com.pocket.currencies.registration;
 
-import com.pocket.currencies.users.entity.UserDto;
+import com.pocket.currencies.users.entity.UserRequestDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +20,8 @@ public class RegistrationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String register(@RequestBody UserDto userDto) {
-        return registrationService.register(userDto);
+    public String register(@RequestBody UserRequestDto userRequestDto) {
+        return registrationService.register(userRequestDto);
     }
 
     @GetMapping(value = "/confirm")

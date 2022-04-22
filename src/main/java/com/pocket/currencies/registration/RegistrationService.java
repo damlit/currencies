@@ -1,9 +1,9 @@
 package com.pocket.currencies.registration;
 
-import com.pocket.currencies.users.entity.UserDto;
+import com.pocket.currencies.users.entity.UserRequestDto;
 
 public interface RegistrationService {
 
-    String register(UserDto userDto);
+    String register(UserRequestDto userRequestDto);
     String confirmToken(String token);
 }

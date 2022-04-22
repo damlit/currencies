@@ -3,8 +3,7 @@ import { TOKEN_KEY } from "../../token/useToken";
 export const getAuthHeader = () => {
     var headers = new Headers();
     const tokenString = localStorage.getItem(TOKEN_KEY);
-    const userToken = JSON.parse(tokenString);
-    headers.append("Authorization", "Bearer " + userToken);
+    headers.append("Authorization", "Bearer " + tokenString);
     return headers;
 };
 

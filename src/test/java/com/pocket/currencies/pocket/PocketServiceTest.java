@@ -19,6 +19,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -126,13 +128,13 @@ public class PocketServiceTest {
         Deposit deposit2 = new Deposit(2, Currency.PLN, Currency.EUR, BigDecimal.valueOf(10.0), BigDecimal.ONE, BigDecimal.TEN, pocket);
         Deposit deposit3 = new Deposit(3, Currency.PLN, Currency.EUR, BigDecimal.valueOf(10.0), BigDecimal.ONE, BigDecimal.TEN, pocket);
         List<Deposit> deposits = Arrays.asList(deposit1, deposit2, deposit3);
-        pocket.setDeposits(deposits);
+        Page<Deposit> emptyPage = new PageImpl<>(deposits);
         user.setPocket(pocket);
         when(userService.getActiveUser()).thenReturn(user);
         when(pocketRepository.getById(1L)).thenReturn(pocket);
-        when(depositRepository.getAllByPocket(pocket, Pageable.ofSize(3))).thenReturn(deposits);
+        when(depositRepository.getAllByPocket(pocket, Pageable.ofSize(3))).thenReturn(emptyPage);
 
-        List<Deposit> depositsList = pocketService.getAllDepositsForCurrentUser(Pageable.ofSize(3));
+        List<Deposit> depositsList = pocketService.getAllDepositsForCurrentUser(Pageable.ofSize(3)).getContent();
 
         verify(depositRepository, times(1)).getAllByPocket(pocket, PageRequest.of(0, 3));
         assertEquals(deposits, depositsList);

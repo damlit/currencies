@@ -9,11 +9,12 @@ import { Link } from 'react-router-dom';
 const Menu = ({ open, logout }) => {
   const { t } = useTranslation('common');
 
-  const role = useSelector((state) => state.user.role);
-  const isHidden = open ? true : false;
+  const role = useSelector((state) => state.auth?.user?.userRole);
+
+  const isHidden = !!open;
   const tabIndex = isHidden ? 0 : -1;
 
-  const isAdmin = () => '"ADMIN"' === role;
+  const isAdmin = () => 'ADMIN' === role;
 
   return (
     <StyledMenu open={open} aria-hidden={!isHidden}>
