@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  db:
+    container_name: curr-db
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=postgresd
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=currencies
+    restart: unless-stopped
+    ports:
+        - "5432:5432"
+    networks:
+      - currency-net
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
+
+  backend:
+    container_name: curr-be
+    environment:
+      - DB_ENDPOINT=curr-db
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - currency-net
+
+  frontend:
+    container_name: curr-fe
+    environment:
+      - PROXY_HOST=http://curr-be:8080
+    build:
+      context: ./react/
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    networks:
+      - currency-net
+
+networks:
+  currency-net:
+    external:
+      name: nat
+
