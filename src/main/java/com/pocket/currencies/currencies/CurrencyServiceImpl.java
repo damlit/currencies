@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -41,7 +42,6 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     public ExchangeQuote getLastQuotes(Currency targetCurrency) {
         LOG.info("Getting last quotes from database (user=" + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
-        ObjectMapper objectMapper = new ObjectMapper();
         ExchangeQuote newestExchangeQuote = exchangeQuoteRepository.findFirstByOrderByQuotesDateDesc();
         recalculateQuotesForOtherCurrency(newestExchangeQuote, targetCurrency);
         return newestExchangeQuote;
@@ -49,7 +49,6 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     public List<ExchangeQuote> getQuotes(Currency targetCurrency) {
         LOG.info("Getting last 10 quotes from database (user=" + SecurityContextHolder.getContext().getAuthentication().getName() + ")");
-        ObjectMapper objectMapper = new ObjectMapper();
         List<ExchangeQuote> newestExchangeQuote = exchangeQuoteRepository.findTop10ByOrderByQuotesDateDesc();
         newestExchangeQuote.forEach(exchangeQuote -> recalculateQuotesForOtherCurrency(exchangeQuote, targetCurrency));
         return newestExchangeQuote;

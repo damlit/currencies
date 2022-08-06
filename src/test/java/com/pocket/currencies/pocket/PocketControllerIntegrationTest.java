@@ -26,11 +26,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -140,40 +140,39 @@ public class PocketControllerIntegrationTest {
                 .andExpect(content().string(expectedResponse));
 
     }
-
+// todo check that / caches for profits / dockercompose
     @Test
     @WithMockUser(username = "test@test.pl")
     public void testGetDeposits() throws Exception {
-        String expectedResponse = "[{\"id\":2,\"soldCurrency\":null,\"boughtCurrency\":null,\"quote\":null,\"soldSum\":null,\"boughtSum\":null}]";
-        String expectedResponse1 = "[{\"id\":4,\"soldCurrency\":null,\"boughtCurrency\":null,\"quote\":null,\"soldSum\":null,\"boughtSum\":null}]";
-        String expectedResponse2 = "[{\"id\":2,\"soldCurrency\":null,\"boughtCurrency\":null,\"quote\":null,\"soldSum\":null,\"boughtSum\":null},"
-                + "{\"id\":3,\"soldCurrency\":null,\"boughtCurrency\":null,\"quote\":null,\"soldSum\":null,\"boughtSum\":null}]";
+        String expectedSoldSum = "1111";
+        String expectedSoldSum1 = "2222";
+        String expectedSoldSum2 = "3333";
         Pocket pocket = new Pocket();
         pocketRepository.save(pocket);
-        Deposit deposit = Deposit.builder().pocket(pocket).build();
+        Deposit deposit = Deposit.builder().pocket(pocket).soldSum(BigDecimal.valueOf(1111)).build();
         depositRepository.save(deposit);
-        Deposit deposit1 = Deposit.builder().pocket(pocket).build();
+        Deposit deposit1 = Deposit.builder().pocket(pocket).soldSum(BigDecimal.valueOf(3333)).build();
         depositRepository.save(deposit1);
-        Deposit deposit2 = Deposit.builder().pocket(pocket).build();
+        Deposit deposit2 = Deposit.builder().pocket(pocket).soldSum(BigDecimal.valueOf(2222)).build();
         depositRepository.save(deposit2);
         User user = User.builder().email("test@test.pl").pocket(pocket).build();
         userRepository.save(user);
         when(userService.getActiveUser()).thenReturn(user);
 
         assertEquals(3, depositRepository.count());
-        this.mvc.perform(get(POCKET_ENDPOINT + "/deposit/0/1")
+        this.mvc.perform(get(POCKET_ENDPOINT + "/deposit?page=0&size=1")
                 .accept(MediaType.ALL))
                 .andExpect(status().isOk())
-                .andExpect(content().string(expectedResponse));
+                .andExpect(content().string(containsString(expectedSoldSum)));
 
-        this.mvc.perform(get(POCKET_ENDPOINT + "/deposit/2/1")
+        this.mvc.perform(get(POCKET_ENDPOINT + "/deposit?page=2&size=1")
                 .accept(MediaType.ALL))
                 .andExpect(status().isOk())
-                .andExpect(content().string(expectedResponse1));
+                .andExpect(content().string(containsString(expectedSoldSum1)));
 
-        this.mvc.perform(get(POCKET_ENDPOINT + "/deposit/0/2")
+        this.mvc.perform(get(POCKET_ENDPOINT + "/deposit?page=0&size=2")
                 .accept(MediaType.ALL))
                 .andExpect(status().isOk())
-                .andExpect(content().string(expectedResponse2));
+                .andExpect(content().string(containsString(expectedSoldSum2)));
     }
 }
